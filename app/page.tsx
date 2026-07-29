@@ -1,67 +1,45 @@
-import Image from "next/image";
+import Navbar from "@/app/components/Navbar";
+import Footer from "@/app/components/Footer";
 
 export default function Home() {
   return (
-    <div className="flex flex-col flex-1 items-center bg-zinc-50 font-sans dark:bg-black">
-      {/* Navigation */}
-      <nav className="sticky top-0 z-50 w-full border-b border-zinc-200 bg-white/80 backdrop-blur-md dark:border-zinc-800 dark:bg-black/80">
-        <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-6 lg:px-8">
-          <div className="flex items-center gap-2">
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-amber-500">
-              <svg className="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
-              </svg>
-            </div>
-            <span className="text-xl font-bold tracking-tight text-zinc-900 dark:text-white">RoofFlow CA</span>
-          </div>
-          <div className="hidden items-center gap-8 md:flex">
-            <a href="#features" className="text-sm font-medium text-zinc-600 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-white">Features</a>
-            <a href="#how-it-works" className="text-sm font-medium text-zinc-600 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-white">How It Works</a>
-            <a href="#pricing" className="text-sm font-medium text-zinc-600 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-white">Pricing</a>
-          </div>
-          <a
-            href="#get-started"
-            className="rounded-full bg-zinc-900 px-5 py-2.5 text-sm font-semibold text-white transition-all hover:bg-zinc-700 dark:bg-white dark:text-black dark:hover:bg-zinc-200"
-          >
-            Get Started
-          </a>
-        </div>
-      </nav>
+    <div className="flex flex-col flex-1 items-center bg-[#F5F7FA] font-sans dark:bg-[#0B0F19]">
+      <Navbar />
 
       <main className="flex w-full max-w-7xl flex-1 flex-col items-center">
         {/* Hero Section */}
         <section className="relative w-full overflow-hidden px-6 pb-20 pt-16 lg:px-8 lg:pt-24">
           <div className="absolute inset-0 -z-10">
-            <div className="absolute left-1/2 top-0 h-[600px] w-[800px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-amber-400/10 blur-3xl dark:bg-amber-500/10" />
+            <div className="absolute left-1/2 top-0 h-[600px] w-[800px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#FF6B35]/10 blur-3xl dark:bg-[#FF6B35]/10" />
           </div>
-          
+
           <div className="mx-auto max-w-4xl text-center">
-            <div className="mb-6 inline-flex items-center rounded-full border border-amber-200 bg-amber-50 px-4 py-1.5 dark:border-amber-900/50 dark:bg-amber-900/20">
-              <span className="mr-2 flex h-2 w-2 rounded-full bg-amber-500 animate-pulse" />
-              <span className="text-sm font-medium text-amber-800 dark:text-amber-200">Now serving all California counties</span>
+            <div className="mb-6 inline-flex items-center rounded-full border border-[#FF6B35]/20 bg-[#FF6B35]/5 px-4 py-1.5 dark:border-[#FF6B35]/30 dark:bg-[#FF6B35]/10">
+              <span className="mr-2 flex h-2 w-2 rounded-full bg-[#FF6B35] animate-pulse" />
+              <span className="text-sm font-medium text-[#FF6B35] dark:text-[#FF6B35]">Now serving all California counties</span>
             </div>
-            
+
             <h1 className="text-4xl font-bold tracking-tight text-zinc-900 dark:text-white sm:text-6xl lg:text-7xl">
               Never Miss a{" "}
               <span className="relative">
-                <span className="relative z-10 text-amber-600 dark:text-amber-400">Roofing Lead</span>
-                <svg className="absolute -bottom-2 left-0 h-3 w-full text-amber-400/40 dark:text-amber-500/40" viewBox="0 0 100 12" preserveAspectRatio="none">
+                <span className="relative z-10 text-[#FF6B35]">Roofing Lead</span>
+                <svg className="absolute -bottom-2 left-0 h-3 w-full text-[#FF6B35]/40" viewBox="0 0 100 12" preserveAspectRatio="none">
                   <path d="M0,8 Q50,0 100,8" stroke="currentColor" strokeWidth="8" fill="none" />
                 </svg>
               </span>{" "}
               in California Again
             </h1>
-            
+
             <p className="mx-auto mt-8 max-w-2xl text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-              AI-powered lead automation built specifically for California roofing contractors. 
-              Capture, qualify, and convert leads from wildfire zones to coastal counties — 
+              AI-powered lead automation built specifically for California roofing contractors.
+              Capture, qualify, and convert leads from wildfire zones to coastal counties —
               while you focus on the job site.
             </p>
-            
+
             <div className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row">
               <a
                 href="#get-started"
-                className="flex h-14 items-center justify-center gap-2 rounded-full bg-zinc-900 px-8 text-base font-semibold text-white shadow-lg shadow-zinc-900/20 transition-all hover:bg-zinc-700 hover:shadow-xl dark:bg-white dark:text-black dark:shadow-white/10 dark:hover:bg-zinc-200"
+                className="flex h-14 items-center justify-center gap-2 rounded-full bg-zinc-900 px-8 text-base font-semibold text-white shadow-lg shadow-zinc-900/20 transition-all hover:bg-zinc-800 hover:shadow-xl dark:bg-[#FF6B35] dark:text-[#0B0F19] dark:shadow-[#FF6B35]/20 dark:hover:bg-[#F7931E]"
               >
                 Start Free Trial
                 <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -69,28 +47,28 @@ export default function Home() {
                 </svg>
               </a>
               <a
-                href="#demo"
+                href="/demo"
                 className="flex h-14 items-center justify-center rounded-full border border-zinc-300 bg-white px-8 text-base font-semibold text-zinc-900 transition-all hover:bg-zinc-50 dark:border-zinc-700 dark:bg-zinc-900 dark:text-white dark:hover:bg-zinc-800"
               >
                 Watch Demo
               </a>
             </div>
-            
+
             <div className="mt-12 flex items-center justify-center gap-8 text-sm text-zinc-500 dark:text-zinc-500">
               <div className="flex items-center gap-2">
-                <svg className="h-5 w-5 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <svg className="h-5 w-5 text-emerald-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
                 </svg>
                 No credit card required
               </div>
               <div className="flex items-center gap-2">
-                <svg className="h-5 w-5 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <svg className="h-5 w-5 text-emerald-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
                 </svg>
                 14-day free trial
               </div>
               <div className="flex items-center gap-2">
-                <svg className="h-5 w-5 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <svg className="h-5 w-5 text-emerald-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
                 </svg>
                 Cancel anytime
@@ -119,16 +97,16 @@ export default function Home() {
         {/* Features Section */}
         <section id="features" className="w-full px-6 py-24 lg:px-8">
           <div className="mx-auto max-w-3xl text-center">
-            <h2 className="text-base font-semibold leading-7 text-amber-600 dark:text-amber-400">Features</h2>
+            <h2 className="text-base font-semibold leading-7 text-[#FF6B35]">Features</h2>
             <p className="mt-2 text-3xl font-bold tracking-tight text-zinc-900 dark:text-white sm:text-4xl">
               Everything you need to dominate California roofing
             </p>
             <p className="mt-6 text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-              From fire-season emergency repairs to solar-ready re-roofs, our automation handles 
+              From fire-season emergency repairs to solar-ready re-roofs, our automation handles
               the unique demands of the California market.
             </p>
           </div>
-          
+
           <div className="mx-auto mt-16 grid max-w-7xl gap-8 sm:grid-cols-2 lg:grid-cols-3">
             {[
               {
@@ -188,9 +166,9 @@ export default function Home() {
             ].map((feature) => (
               <div
                 key={feature.title}
-                className="group relative rounded-2xl border border-zinc-200 bg-white p-8 transition-all hover:shadow-lg hover:shadow-zinc-900/5 dark:border-zinc-800 dark:bg-zinc-900/50 dark:hover:shadow-zinc-900/20"
+                className="group relative rounded-2xl border border-zinc-200 bg-white p-8 transition-all hover:shadow-lg hover:shadow-zinc-900/5 dark:border-zinc-800 dark:bg-[#0B0F19] dark:hover:shadow-zinc-900/20"
               >
-                <div className="mb-4 inline-flex h-12 w-12 items-center justify-center rounded-xl bg-amber-50 text-amber-600 dark:bg-amber-900/20 dark:text-amber-400">
+                <div className="mb-4 inline-flex h-12 w-12 items-center justify-center rounded-xl bg-[#FF6B35]/10 text-[#FF6B35]">
                   {feature.icon}
                 </div>
                 <h3 className="text-lg font-semibold text-zinc-900 dark:text-white">{feature.title}</h3>
@@ -204,12 +182,12 @@ export default function Home() {
         <section id="how-it-works" className="w-full bg-white px-6 py-24 dark:bg-zinc-900/30 lg:px-8">
           <div className="mx-auto max-w-7xl">
             <div className="mx-auto max-w-3xl text-center">
-              <h2 className="text-base font-semibold leading-7 text-amber-600 dark:text-amber-400">How It Works</h2>
+              <h2 className="text-base font-semibold leading-7 text-[#FF6B35]">How It Works</h2>
               <p className="mt-2 text-3xl font-bold tracking-tight text-zinc-900 dark:text-white sm:text-4xl">
                 From first click to signed contract
               </p>
             </div>
-            
+
             <div className="mt-16 grid gap-12 lg:grid-cols-3">
               {[
                 {
@@ -229,7 +207,7 @@ export default function Home() {
                 },
               ].map((item) => (
                 <div key={item.step} className="relative">
-                  <div className="text-6xl font-bold text-zinc-100 dark:text-zinc-800">{item.step}</div>
+                  <div className="text-6xl font-bold text-zinc-200 dark:text-zinc-800">{item.step}</div>
                   <h3 className="-mt-8 text-xl font-bold text-zinc-900 dark:text-white">{item.title}</h3>
                   <p className="mt-4 text-base leading-7 text-zinc-600 dark:text-zinc-400">{item.desc}</p>
                 </div>
@@ -241,19 +219,19 @@ export default function Home() {
         {/* Testimonial */}
         <section className="w-full px-6 py-24 lg:px-8">
           <div className="mx-auto max-w-4xl">
-            <div className="relative overflow-hidden rounded-3xl bg-zinc-900 px-8 py-16 text-center dark:bg-zinc-800 sm:px-16">
-              <div className="absolute -left-4 -top-4 h-24 w-24 rounded-full bg-amber-500/20 blur-2xl" />
-              <div className="absolute -bottom-4 -right-4 h-24 w-24 rounded-full bg-amber-500/20 blur-2xl" />
-              
-              <svg className="mx-auto h-10 w-10 text-amber-500" fill="currentColor" viewBox="0 0 24 24">
+            <div className="relative overflow-hidden rounded-3xl bg-[#0B0F19] px-8 py-16 text-center border border-zinc-800 sm:px-16">
+              <div className="absolute -left-4 -top-4 h-24 w-24 rounded-full bg-[#FF6B35]/20 blur-2xl" />
+              <div className="absolute -bottom-4 -right-4 h-24 w-24 rounded-full bg-[#FF6B35]/20 blur-2xl" />
+
+              <svg className="mx-auto h-10 w-10 text-[#FF6B35]" fill="currentColor" viewBox="0 0 24 24">
                 <path d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10h-9.983zm-14.017 0v-7.391c0-5.704 3.748-9.57 9-10.609l.996 2.151c-2.433.917-3.996 3.638-3.996 5.849h3.983v10h-9.983z" />
               </svg>
-              
+
               <blockquote className="mt-8 text-xl font-medium leading-9 text-white sm:text-2xl">
-                "We went from chasing leads to having a full calendar. In the first month after wildfire season, 
-                RoofFlow helped us book 47 inspections in Sonoma County alone. The automation pays for itself."
+                "We went from chasing leads to having a full calendar. In the first month after wildfire season,
+                StackBoardAI helped us book 47 inspections in Sonoma County alone. The automation pays for itself."
               </blockquote>
-              
+
               <div className="mt-8">
                 <div className="font-semibold text-white">Marcus Chen</div>
                 <div className="mt-1 text-sm text-zinc-400">Owner, Golden State Roofing · San Diego, CA</div>
@@ -264,23 +242,23 @@ export default function Home() {
 
         {/* CTA Section */}
         <section id="get-started" className="w-full px-6 py-24 lg:px-8">
-          <div className="relative mx-auto max-w-5xl overflow-hidden rounded-3xl bg-zinc-900 px-6 py-16 text-center shadow-2xl dark:bg-zinc-800 sm:px-16 sm:py-20">
+          <div className="relative mx-auto max-w-5xl overflow-hidden rounded-3xl bg-[#0B0F19] px-6 py-16 text-center shadow-2xl border border-zinc-800 sm:px-16 sm:py-20">
             <div className="absolute inset-0 -z-10">
-              <div className="absolute left-0 top-0 h-full w-full bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-amber-500/20 via-transparent to-transparent" />
+              <div className="absolute left-0 top-0 h-full w-full bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-[#FF6B35]/20 via-transparent to-transparent" />
             </div>
-            
+
             <h2 className="text-3xl font-bold tracking-tight text-white sm:text-4xl">
               Ready to fill your pipeline?
             </h2>
             <p className="mx-auto mt-6 max-w-xl text-lg leading-8 text-zinc-300">
-              Join 2,400+ California roofing contractors using automation to grow their business. 
+              Join 2,400+ California roofing contractors using automation to grow their business.
               Start your free 14-day trial today.
             </p>
-            
+
             <div className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row">
               <a
                 href="#"
-                className="flex h-14 items-center justify-center rounded-full bg-amber-500 px-8 text-base font-semibold text-zinc-900 transition-all hover:bg-amber-400"
+                className="flex h-14 items-center justify-center rounded-full bg-[#FF6B35] px-8 text-base font-semibold text-[#0B0F19] transition-all hover:bg-[#F7931E]"
               >
                 Start Free Trial
               </a>
@@ -291,7 +269,7 @@ export default function Home() {
                 Talk to Sales
               </a>
             </div>
-            
+
             <p className="mt-6 text-sm text-zinc-400">
               Used by contractors in Los Angeles, Bay Area, San Diego, Sacramento, and Central Valley
             </p>
@@ -299,60 +277,7 @@ export default function Home() {
         </section>
       </main>
 
-      {/* Footer */}
-      <footer className="w-full border-t border-zinc-200 bg-white px-6 py-12 dark:border-zinc-800 dark:bg-zinc-950 lg:px-8">
-        <div className="mx-auto max-w-7xl">
-          <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
-            <div>
-              <div className="flex items-center gap-2">
-                <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-amber-500">
-                  <svg className="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
-                  </svg>
-                </div>
-                <span className="text-lg font-bold text-zinc-900 dark:text-white">RoofFlow CA</span>
-              </div>
-              <p className="mt-4 text-sm leading-6 text-zinc-600 dark:text-zinc-400">
-                The only lead automation platform built exclusively for California roofing professionals.
-              </p>
-            </div>
-            
-            <div>
-              <h4 className="text-sm font-semibold text-zinc-900 dark:text-white">Product</h4>
-              <ul className="mt-4 space-y-3 text-sm text-zinc-600 dark:text-zinc-400">
-                <li><a href="#" className="hover:text-zinc-900 dark:hover:text-white">Features</a></li>
-                <li><a href="#" className="hover:text-zinc-900 dark:hover:text-white">Integrations</a></li>
-                <li><a href="#" className="hover:text-zinc-900 dark:hover:text-white">Pricing</a></li>
-                <li><a href="#" className="hover:text-zinc-900 dark:hover:text-white">Changelog</a></li>
-              </ul>
-            </div>
-            
-            <div>
-              <h4 className="text-sm font-semibold text-zinc-900 dark:text-white">Company</h4>
-              <ul className="mt-4 space-y-3 text-sm text-zinc-600 dark:text-zinc-400">
-                <li><a href="#" className="hover:text-zinc-900 dark:hover:text-white">About</a></li>
-                <li><a href="#" className="hover:text-zinc-900 dark:hover:text-white">Blog</a></li>
-                <li><a href="#" className="hover:text-zinc-900 dark:hover:text-white">Careers</a></li>
-                <li><a href="#" className="hover:text-zinc-900 dark:hover:text-white">Contact</a></li>
-              </ul>
-            </div>
-            
-            <div>
-              <h4 className="text-sm font-semibold text-zinc-900 dark:text-white">Legal</h4>
-              <ul className="mt-4 space-y-3 text-sm text-zinc-600 dark:text-zinc-400">
-                <li><a href="#" className="hover:text-zinc-900 dark:hover:text-white">Privacy</a></li>
-                <li><a href="#" className="hover:text-zinc-900 dark:hover:text-white">Terms</a></li>
-                <li><a href="#" className="hover:text-zinc-900 dark:hover:text-white">CCPA</a></li>
-                <li><a href="#" className="hover:text-zinc-900 dark:hover:text-white">Contractor License Info</a></li>
-              </ul>
-            </div>
-          </div>
-          
-          <div className="mt-12 border-t border-zinc-200 pt-8 text-center text-sm text-zinc-500 dark:border-zinc-800 dark:text-zinc-500">
-            © 2026 RoofFlow CA. All rights reserved. Built for California contractors.
-          </div>
-        </div>
-      </footer>
+      <Footer />
     </div>
   );
 }
