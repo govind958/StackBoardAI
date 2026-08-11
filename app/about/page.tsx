@@ -1,291 +1,750 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useState } from "react";
+import {
+  ArrowDown,
+  ArrowRight,
+  Leaf,
+  Link2,
+  Menu,
+  X,
+} from "lucide-react";
 
-function AnimatedCounter({ target, suffix = "", duration = 2000 }: { target: number; suffix?: string; duration?: number }) {
-  const [count, setCount] = useState(0);
-  const ref = useRef<HTMLSpanElement>(null);
-  const hasAnimated = useRef(false);
+const COLORS = {
+  ivory: "#F9F8F6",
+  sand: "#EFE9E3",
+  taupe: "#D9CFC7",
+  clay: "#C9B59C",
+  black: "#171615",
+};
 
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting && !hasAnimated.current) {
-          hasAnimated.current = true;
-          const start = performance.now();
-          const animate = (now: number) => {
-            const progress = Math.min((now - start) / duration, 1);
-            const easeOut = 1 - Math.pow(1 - progress, 3);
-            setCount(Math.floor(easeOut * target));
-            if (progress < 1) requestAnimationFrame(animate);
-          };
-          requestAnimationFrame(animate);
-        }
-      },
-      { threshold: 0.5 }
-    );
+const team = [
+  {
+    name: "Your Name",
+    role: "Founder / Growth Strategist",
+    image: "/team/founder.jpg",
+  },
+  {
+    name: "Team Member",
+    role: "Automation & Systems",
+    image: "/team/team-2.jpg",
+  },
+  {
+    name: "Team Member",
+    role: "Design & Conversion",
+    image: "/team/team-3.jpg",
+  },
+];
 
-    if (ref.current) observer.observe(ref.current);
-    return () => observer.disconnect();
-  }, [target, duration]);
+function Navbar({ onStart }: { onStart: () => void }) {
+  const [open, setOpen] = useState(false);
+
+  const links = [
+    ["Services", "/services"],
+    ["How It Works", "/HowItWorks"],
+    ["Our Work", "/OurWorks"],
+    ["Free Audit", "/FreeGrowthAudit"],
+    ["Pricing", "/Pricing"],
+    ["About", "/About"],
+  ];
 
   return (
-    <span ref={ref}>
-      {count.toLocaleString()}
-      {suffix}
-    </span>
+    <header
+      className="sticky top-0 z-50 border-b"
+      style={{
+        backgroundColor: "rgba(249,248,246,.94)",
+        borderColor: "rgba(23,22,21,.08)",
+        backdropFilter: "blur(14px)",
+      }}
+    >
+      <div className="mx-auto flex h-[76px] max-w-7xl items-center justify-between px-5 sm:px-7 lg:px-10">
+        <a href="/" className="flex items-center gap-3">
+          <span
+            className="flex h-10 w-10 items-center justify-center rounded-full"
+            style={{
+              backgroundColor: COLORS.black,
+              color: COLORS.ivory,
+            }}
+          >
+            <Leaf className="h-5 w-5" />
+          </span>
+
+          <div>
+            <div className="text-sm font-black tracking-[-.02em]">
+              FIELD & FORM
+            </div>
+            <div
+              className="text-[8px] font-bold uppercase tracking-[.2em]"
+              style={{ color: COLORS.clay }}
+            >
+              Growth Systems
+            </div>
+          </div>
+        </a>
+
+        <nav className="hidden items-center gap-7 text-sm font-semibold lg:flex">
+          {links.map(([label, href]) => (
+            <a
+              href={href}
+              key={href}
+              className={label === "About" ? "font-black" : ""}
+            >
+              {label}
+            </a>
+          ))}
+        </nav>
+
+        <button
+          onClick={onStart}
+          className="hidden rounded-full px-5 py-3 text-sm font-black sm:block"
+          style={{
+            backgroundColor: COLORS.black,
+            color: COLORS.ivory,
+          }}
+        >
+          Get Started
+        </button>
+
+        <div className="flex items-center gap-2 sm:hidden">
+          <button
+            onClick={onStart}
+            className="rounded-full px-4 py-2.5 text-xs font-black"
+            style={{
+              backgroundColor: COLORS.black,
+              color: COLORS.ivory,
+            }}
+          >
+            Start
+          </button>
+
+          <button
+            onClick={() => setOpen(!open)}
+            className="flex h-10 w-10 items-center justify-center rounded-full"
+            style={{ backgroundColor: COLORS.clay }}
+          >
+            {open ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+          </button>
+        </div>
+      </div>
+
+      {open && (
+        <div
+          className="border-t px-5 py-5 sm:hidden"
+          style={{ borderColor: "rgba(23,22,21,.08)" }}
+        >
+          {links.map(([label, href]) => (
+            <a
+              key={href}
+              href={href}
+              onClick={() => setOpen(false)}
+              className="block py-2.5 text-sm font-bold"
+            >
+              {label}
+            </a>
+          ))}
+
+          <button
+            onClick={() => {
+              setOpen(false);
+              onStart();
+            }}
+            className="mt-3 w-full rounded-full px-5 py-3 text-sm font-black"
+            style={{
+              backgroundColor: COLORS.black,
+              color: COLORS.ivory,
+            }}
+          >
+            Get Started
+          </button>
+        </div>
+      )}
+    </header>
+  );
+}
+
+function StartModal({
+  open,
+  close,
+}: {
+  open: boolean;
+  close: () => void;
+}) {
+  if (!open) return null;
+
+  return (
+    <div
+      className="fixed inset-0 z-[100] flex items-center justify-center p-4"
+      style={{
+        backgroundColor: "rgba(23,22,21,.68)",
+        backdropFilter: "blur(8px)",
+      }}
+      onMouseDown={(e) => {
+        if (e.currentTarget === e.target) close();
+      }}
+    >
+      <div
+        className="relative w-full max-w-xl rounded-[30px] border p-7 sm:p-10"
+        style={{
+          backgroundColor: COLORS.ivory,
+          borderColor: "rgba(23,22,21,.10)",
+        }}
+      >
+        <button
+          onClick={close}
+          className="absolute right-4 top-4 flex h-10 w-10 items-center justify-center rounded-full"
+          style={{ backgroundColor: COLORS.sand }}
+        >
+          <X className="h-5 w-5" />
+        </button>
+
+        <div
+          className="text-[10px] font-black uppercase tracking-[.2em]"
+          style={{ color: COLORS.clay }}
+        >
+          Start a conversation
+        </div>
+
+        <h2 className="mt-3 text-3xl font-black tracking-[-.04em] sm:text-4xl">
+          Let&apos;s build something that works.
+        </h2>
+
+        <p className="mt-3 max-w-md text-sm leading-6 opacity-55">
+          Tell us about your business and what you&apos;re trying to improve.
+          We&apos;ll take it from there.
+        </p>
+
+        <form
+          className="mt-7 space-y-3"
+          onSubmit={(e) => {
+            e.preventDefault();
+            close();
+          }}
+        >
+          <input
+            required
+            placeholder="Your name"
+            className="w-full rounded-xl border px-4 py-3.5 text-sm outline-none"
+            style={{
+              borderColor: "rgba(23,22,21,.13)",
+              backgroundColor: COLORS.ivory,
+            }}
+          />
+
+          <input
+            required
+            type="email"
+            placeholder="Email address"
+            className="w-full rounded-xl border px-4 py-3.5 text-sm outline-none"
+            style={{
+              borderColor: "rgba(23,22,21,.13)",
+              backgroundColor: COLORS.ivory,
+            }}
+          />
+
+          <input
+            required
+            placeholder="Business website"
+            className="w-full rounded-xl border px-4 py-3.5 text-sm outline-none"
+            style={{
+              borderColor: "rgba(23,22,21,.13)",
+              backgroundColor: COLORS.ivory,
+            }}
+          />
+
+          <textarea
+            rows={4}
+            placeholder="What would you like help with?"
+            className="w-full resize-none rounded-xl border px-4 py-3.5 text-sm outline-none"
+            style={{
+              borderColor: "rgba(23,22,21,.13)",
+              backgroundColor: COLORS.ivory,
+            }}
+          />
+
+          <button
+            type="submit"
+            className="flex w-full items-center justify-center gap-2 rounded-full px-5 py-4 text-sm font-black"
+            style={{
+              backgroundColor: COLORS.black,
+              color: COLORS.ivory,
+            }}
+          >
+            Send Request
+            <ArrowRight className="h-4 w-4" />
+          </button>
+        </form>
+      </div>
+    </div>
+  );
+}
+
+function Footer() {
+  return (
+    <footer
+      className="border-t"
+      style={{ borderColor: "rgba(23,22,21,.09)" }}
+    >
+      <div className="mx-auto flex max-w-7xl flex-col justify-between gap-5 px-5 py-8 text-xs opacity-50 sm:flex-row sm:px-7 lg:px-10">
+        <span>
+          © {new Date().getFullYear()} Field & Form. All rights reserved.
+        </span>
+
+        <div className="flex flex-wrap gap-5">
+          <a href="/services">Services</a>
+          <a href="/HowItWorks">How It Works</a>
+          <a href="/OurWorks">Our Work</a>
+          <a href="/Pricing">Pricing</a>
+          <a href="/FreeGrowthAudit">Free Audit</a>
+        </div>
+      </div>
+    </footer>
   );
 }
 
 export default function AboutPage() {
-  const values = [
-    {
-      title: "Contractor-First",
-      description:
-        "Built by people who understand roofing. Every feature is designed around the real workflow of California contractors, not Silicon Valley assumptions.",
-      icon: (
-        <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
-        </svg>
-      ),
-    },
-    {
-      title: "CSLB Compliant",
-      description:
-        "We obsess over compliance so you don't have to. Every automation follows California State License Board regulations and TCPA guidelines.",
-      icon: (
-        <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z" />
-        </svg>
-      ),
-    },
-    {
-      title: "Speed to Lead",
-      description:
-        "The contractor who responds first wins the job. Our AI answers in under 60 seconds — 24/7 — so you never lose another lead to a competitor.",
-      icon: (
-        <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z" />
-        </svg>
-      ),
-    },
-    {
-      title: "Transparent Pricing",
-      description:
-        "No setup fees, no hidden charges, no long-term contracts. One flat rate. If we don't deliver ROI in 30 days, you get your money back.",
-      icon: (
-        <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M2.25 18.75a60.07 60.07 0 0115.797 2.101c.727.198 1.453-.342 1.453-1.096V18.75M3.75 4.5v.75A.75.75 0 013 6h-.75m0 0v.375c0 .621.504 1.125 1.125 1.125H20.25M2.25 18.75V9A2.25 2.25 0 014.5 6.75h15A2.25 2.25 0 0121.75 9v9.75m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5" />
-        </svg>
-      ),
-    },
-  ];
-
-  const team = [
-    { name: "Alex Rivera", role: "Founder & CEO", initials: "AR", color: "bg-amber-500" },
-    { name: "Sarah Chen", role: "Head of Product", initials: "SC", color: "bg-orange-500" },
-    { name: "Marcus Johnson", role: "Lead Engineer", initials: "MJ", color: "bg-zinc-600" },
-    { name: "Diana Patel", role: "Customer Success", initials: "DP", color: "bg-amber-600" },
-  ];
+  const [modalOpen, setModalOpen] = useState(false);
 
   return (
-    <section className="relative w-full overflow-hidden bg-white dark:bg-zinc-950">
-      {/* Ambient background */}
-      <div className="pointer-events-none absolute top-0 left-1/2 h-[500px] w-[500px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-amber-500/5 blur-3xl dark:bg-amber-500/10" />
-      <div className="pointer-events-none absolute bottom-40 -left-20 h-72 w-72 rounded-full bg-orange-500/5 blur-3xl dark:bg-orange-500/10" />
+    <main
+      className="min-h-screen"
+      style={{
+        backgroundColor: COLORS.ivory,
+        color: COLORS.black,
+        fontFamily: "Inter, ui-sans-serif, system-ui, sans-serif",
+      }}
+    >
+      <Navbar onStart={() => setModalOpen(true)} />
 
-      {/* Hero Section */}
-      <div className="relative pt-32 pb-20 sm:pt-40 sm:pb-24">
-        <div className="mx-auto max-w-7xl px-6 lg:px-8">
-          <div className="mx-auto max-w-3xl text-center">
-            <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-amber-500/20 bg-amber-500/5 px-4 py-1.5 text-xs font-semibold uppercase tracking-wider text-amber-700 dark:border-amber-400/20 dark:bg-amber-400/5 dark:text-amber-400">
-              <span className="relative flex h-2 w-2">
-                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-amber-400 opacity-75" />
-                <span className="relative inline-flex h-2 w-2 rounded-full bg-amber-500" />
-              </span>
-              About StackBoardAI
-            </div>
-            <h1 className="text-4xl font-bold tracking-tight text-zinc-900 dark:text-white sm:text-6xl">
-              Built for the roofers who{" "}
-              <span className="bg-gradient-to-r from-amber-500 to-orange-500 bg-clip-text text-transparent">
-                build California
-              </span>
-            </h1>
-            <p className="mt-6 text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-              We are a team of operators, engineers, and marketers obsessed with one thing: 
-              helping licensed California roofing contractors win more jobs with less effort.
-            </p>
-          </div>
-        </div>
-      </div>
-
-      {/* Stats Row */}
-      <div className="border-y border-zinc-200 bg-zinc-50/50 dark:border-zinc-800 dark:bg-zinc-900/30">
-        <div className="mx-auto max-w-7xl px-6 py-12 lg:px-8">
-          <div className="grid grid-cols-2 gap-8 md:grid-cols-4">
-            {[
-              { value: 200, suffix: "+", label: "CA Contractors" },
-              { value: 48, suffix: "h", label: "Avg. Setup Time" },
-              { value: 98, suffix: "%", label: "Lead Response Rate" },
-              { value: 4.9, suffix: "/5", label: "Customer Rating", isDecimal: true },
-            ].map((stat) => (
-              <div key={stat.label} className="text-center">
-                <div className="text-3xl font-bold tracking-tight text-zinc-900 dark:text-white sm:text-4xl">
-                  {stat.isDecimal ? (
-                    <span>{stat.value}{stat.suffix}</span>
-                  ) : (
-                    <AnimatedCounter target={stat.value} suffix={stat.suffix} />
-                  )}
-                </div>
-                <div className="mt-1 text-sm font-medium text-zinc-500 dark:text-zinc-400">{stat.label}</div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
-
-      {/* Story Section */}
-      <div className="py-24 sm:py-32">
-        <div className="mx-auto max-w-7xl px-6 lg:px-8">
-          <div className="mx-auto grid max-w-2xl grid-cols-1 gap-16 lg:mx-0 lg:max-w-none lg:grid-cols-2 lg:items-center">
+      {/* =========================================================
+          HERO — EDITORIAL
+      ========================================================= */}
+      <section className="border-b" style={{ borderColor: "rgba(23,22,21,.08)" }}>
+        <div className="mx-auto max-w-7xl px-5 pb-16 pt-16 sm:px-7 sm:pb-20 lg:px-10 lg:pb-24 lg:pt-24">
+          <div className="grid gap-12 lg:grid-cols-[1fr_1.45fr] lg:items-end">
             <div>
-              <h2 className="text-3xl font-bold tracking-tight text-zinc-900 dark:text-white sm:text-4xl">
-                Why we started
-              </h2>
-              <p className="mt-6 text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-                After watching too many skilled roofing contractors lose leads to faster-responding competitors 
-                and big-box home improvement stores, we knew something had to change.
-              </p>
-              <p className="mt-4 text-base leading-7 text-zinc-600 dark:text-zinc-400">
-                StackBoardAI was born from a simple belief: California roofers deserve the same AI-powered 
-                automation that Fortune 500 companies use — but built specifically for their workflow, 
-                their compliance requirements, and their customers.
-              </p>
-              <p className="mt-4 text-base leading-7 text-zinc-600 dark:text-zinc-400">
-                Today, we power the growth of over 200 contractors across Los Angeles, the Bay Area, 
-                San Diego, and the Central Valley. And we are just getting started.
+              <div
+                className="text-[10px] font-black uppercase tracking-[.22em]"
+                style={{ color: COLORS.clay }}
+              >
+                About the company
+              </div>
+
+              <p className="mt-6 max-w-sm text-sm leading-7 opacity-55">
+                We are a growth systems studio helping home-service businesses
+                turn more of their existing opportunities into real revenue.
               </p>
             </div>
-            <div className="relative">
-              <div className="absolute -inset-4 rounded-3xl bg-gradient-to-r from-amber-500/10 to-orange-500/10 blur-xl dark:from-amber-500/20 dark:to-orange-500/20" />
-              <div className="relative rounded-2xl border border-zinc-200 bg-white p-8 shadow-xl dark:border-zinc-800 dark:bg-zinc-900">
-                <div className="flex items-center gap-4">
-                  <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-amber-500 font-black text-zinc-950 shadow-lg shadow-amber-500/30">
-                    S
-                  </div>
-                  <div>
-                    <p className="text-sm font-semibold text-zinc-900 dark:text-white">StackBoardAI</p>
-                    <p className="text-xs text-zinc-500 dark:text-zinc-400">Est. 2023 • California</p>
-                  </div>
-                </div>
-                <div className="mt-6 space-y-4">
-                  {[
-                    { label: "Headquarters", value: "Los Angeles, CA" },
-                    { label: "Focus", value: "California Roofing Contractors" },
-                    { label: "Compliance", value: "CSLB & TCPA Ready" },
-                    { label: "Support", value: "Mon–Sat, 6am–6pm PST" },
-                  ].map((item) => (
-                    <div key={item.label} className="flex justify-between border-b border-zinc-100 pb-3 last:border-0 dark:border-zinc-800">
-                      <span className="text-sm text-zinc-500 dark:text-zinc-400">{item.label}</span>
-                      <span className="text-sm font-medium text-zinc-900 dark:text-white">{item.value}</span>
-                    </div>
-                  ))}
+
+            <div>
+              <h1 className="text-5xl font-black leading-[.91] tracking-[-.065em] sm:text-7xl lg:text-[92px]">
+                We make
+                <br />
+                <span style={{ color: COLORS.clay }}>growth</span> work
+                <br />
+                harder.
+              </h1>
+
+              <div className="mt-8 flex items-center gap-3 text-xs font-black uppercase tracking-[.15em] opacity-45">
+                <ArrowDown className="h-4 w-4" />
+                Scroll to meet us
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* =========================================================
+          LARGE TEAM IMAGE
+      ========================================================= */}
+      <section>
+        <div className="mx-auto max-w-[1500px] px-3 pt-3 sm:px-5">
+          <div
+            className="relative min-h-[520px] overflow-hidden rounded-[30px] sm:min-h-[650px] lg:min-h-[760px]"
+            style={{ backgroundColor: COLORS.sand }}
+          >
+            <img
+              src="/team/team-photo.jpg"
+              alt="Our team"
+              className="absolute inset-0 h-full w-full object-cover"
+              onError={(e) => {
+                e.currentTarget.style.display = "none";
+              }}
+            />
+
+            <div
+              className="absolute inset-0"
+              style={{
+                background:
+                  "linear-gradient(90deg, rgba(23,22,21,.62) 0%, rgba(23,22,21,.15) 50%, rgba(23,22,21,.05) 100%)",
+              }}
+            />
+
+            <div className="absolute bottom-7 left-7 max-w-lg text-white sm:bottom-12 sm:left-12 lg:bottom-16 lg:left-16">
+              <div className="text-[10px] font-black uppercase tracking-[.2em] opacity-70">
+                Built for businesses in the real world
+              </div>
+
+              <h2 className="mt-4 text-4xl font-black leading-[.95] tracking-[-.04em] sm:text-5xl lg:text-6xl">
+                Less chasing.
+                <br />
+                More doing.
+              </h2>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* =========================================================
+          WHO WE ARE
+      ========================================================= */}
+      <section className="py-24 sm:py-32">
+        <div className="mx-auto grid max-w-6xl gap-14 px-5 sm:px-7 lg:grid-cols-[.8fr_1.2fr] lg:px-10">
+          <div>
+            <div
+              className="text-[10px] font-black uppercase tracking-[.2em]"
+              style={{ color: COLORS.clay }}
+            >
+              01 — Who we are
+            </div>
+
+            <h2 className="mt-5 max-w-md text-4xl font-black leading-[.98] tracking-[-.045em] sm:text-5xl">
+              We&apos;re not here to add more software to your business.
+            </h2>
+          </div>
+
+          <div className="max-w-2xl">
+            <p className="text-xl font-medium leading-8 sm:text-2xl sm:leading-9">
+              We build the systems that make the software you already have
+              actually work together.
+            </p>
+
+            <div className="mt-8 grid gap-6 border-t pt-8 sm:grid-cols-2" style={{ borderColor: "rgba(23,22,21,.12)" }}>
+              <p className="text-sm leading-7 opacity-55">
+                Your website captures the lead. Your automation responds.
+                Follow-up keeps the conversation moving. Booking turns interest
+                into an appointment.
+              </p>
+
+              <p className="text-sm leading-7 opacity-55">
+                The goal is simple: create a connected customer journey that
+                keeps working when you&apos;re busy running the actual business.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* =========================================================
+          FOUNDER STORY
+      ========================================================= */}
+      <section
+        className="border-y"
+        style={{
+          backgroundColor: COLORS.sand,
+          borderColor: "rgba(23,22,21,.08)",
+        }}
+      >
+        <div className="mx-auto grid max-w-7xl lg:grid-cols-[1fr_1fr]">
+          <div className="relative min-h-[560px] overflow-hidden lg:min-h-[700px]">
+            <img
+              src="/team/founder.jpg"
+              alt="Founder"
+              className="absolute inset-0 h-full w-full object-cover"
+              onError={(e) => {
+                e.currentTarget.style.display = "none";
+              }}
+            />
+          </div>
+
+          <div className="flex items-center px-6 py-20 sm:px-12 lg:px-20 lg:py-28">
+            <div className="max-w-xl">
+              <div
+                className="text-[10px] font-black uppercase tracking-[.2em]"
+                style={{ color: COLORS.clay }}
+              >
+                02 — The story
+              </div>
+
+              <h2 className="mt-5 text-4xl font-black leading-[.98] tracking-[-.045em] sm:text-5xl">
+                Great businesses shouldn&apos;t lose customers because they
+                were too busy doing great work.
+              </h2>
+
+              <div className="mt-8 space-y-5 text-sm leading-7 opacity-60">
+                <p>
+                  Home-service owners spend their days on jobs, managing crews,
+                  answering calls, creating estimates, and keeping customers
+                  happy.
+                </p>
+
+                <p>
+                  That makes one thing incredibly easy to overlook: what happens
+                  between a customer raising their hand and becoming a booked
+                  job.
+                </p>
+
+                <p>
+                  That gap is where we work. We combine conversion-focused
+                  websites, lead capture, follow-up, appointment systems and
+                  customer reactivation into one practical growth system.
+                </p>
+              </div>
+
+              <div className="mt-10 border-t pt-6" style={{ borderColor: "rgba(23,22,21,.12)" }}>
+                <div className="text-sm font-black">Your Name</div>
+                <div
+                  className="mt-1 text-[10px] font-black uppercase tracking-[.15em]"
+                  style={{ color: COLORS.clay }}
+                >
+                  Founder & Growth Strategist
                 </div>
               </div>
             </div>
           </div>
         </div>
-      </div>
+      </section>
 
-      {/* Values Grid */}
-      <div className="border-y border-zinc-200 bg-zinc-50/50 py-24 dark:border-zinc-800 dark:bg-zinc-900/30 sm:py-32">
-        <div className="mx-auto max-w-7xl px-6 lg:px-8">
-          <div className="mx-auto max-w-2xl text-center">
-            <h2 className="text-base font-semibold uppercase tracking-wider text-amber-600 dark:text-amber-400">
-              Our Principles
-            </h2>
-            <p className="mt-3 text-3xl font-bold tracking-tight text-zinc-900 dark:text-white sm:text-4xl">
-              How we operate
+      {/* =========================================================
+          APPROACH
+      ========================================================= */}
+      <section className="py-24 sm:py-32">
+        <div className="mx-auto max-w-6xl px-5 sm:px-7 lg:px-10">
+          <div className="grid gap-10 lg:grid-cols-[.65fr_1.35fr]">
+            <div>
+              <div
+                className="text-[10px] font-black uppercase tracking-[.2em]"
+                style={{ color: COLORS.clay }}
+              >
+                03 — Our approach
+              </div>
+
+              <h2 className="mt-5 text-4xl font-black leading-[.98] tracking-[-.045em] sm:text-5xl">
+                Simple systems.
+                <br />
+                Serious results.
+              </h2>
+            </div>
+
+            <div>
+              {[
+                [
+                  "01",
+                  "Capture",
+                  "Make it ridiculously easy for the right customer to contact you, request an estimate, or book the next step.",
+                ],
+                [
+                  "02",
+                  "Respond",
+                  "When a lead comes in, the system responds quickly and starts the conversation before interest disappears.",
+                ],
+                [
+                  "03",
+                  "Convert",
+                  "Follow-up, booking, reviews and reactivation keep working after the first interaction.",
+                ],
+              ].map(([number, title, text]) => (
+                <div
+                  key={number}
+                  className="grid grid-cols-[60px_1fr] gap-5 border-t py-7 sm:grid-cols-[90px_1fr] sm:gap-8"
+                  style={{ borderColor: "rgba(23,22,21,.12)" }}
+                >
+                  <div
+                    className="text-xs font-black"
+                    style={{ color: COLORS.clay }}
+                  >
+                    {number}
+                  </div>
+
+                  <div>
+                    <h3 className="text-2xl font-black">{title}</h3>
+                    <p className="mt-3 max-w-xl text-sm leading-7 opacity-55">
+                      {text}
+                    </p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* =========================================================
+          TEAM
+      ========================================================= */}
+      <section
+        className="border-y"
+        style={{
+          backgroundColor: COLORS.black,
+          color: COLORS.ivory,
+          borderColor: COLORS.black,
+        }}
+      >
+        <div className="mx-auto max-w-7xl px-5 py-24 sm:px-7 sm:py-32 lg:px-10">
+          <div className="flex flex-col justify-between gap-7 md:flex-row md:items-end">
+            <div>
+              <div
+                className="text-[10px] font-black uppercase tracking-[.2em]"
+                style={{ color: COLORS.clay }}
+              >
+                04 — The team
+              </div>
+
+              <h2 className="mt-5 text-4xl font-black tracking-[-.04em] sm:text-5xl">
+                Small team.
+                <br />
+                Close collaboration.
+              </h2>
+            </div>
+
+            <p className="max-w-sm text-sm leading-7 opacity-45">
+              We keep the team intentionally small so strategy, design,
+              automation and execution stay connected.
             </p>
           </div>
-          <div className="mx-auto mt-16 grid max-w-5xl gap-8 sm:grid-cols-2 lg:grid-cols-4">
-            {values.map((value) => (
-              <div
-                key={value.title}
-                className="group relative rounded-2xl border border-zinc-200 bg-white p-6 transition-all duration-300 hover:border-amber-500/30 hover:shadow-lg hover:shadow-amber-900/5 dark:border-zinc-800 dark:bg-zinc-900/50 dark:hover:border-amber-500/20"
-              >
-                <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-zinc-100 text-zinc-700 transition-colors duration-300 group-hover:bg-amber-500/10 group-hover:text-amber-600 dark:bg-zinc-800 dark:text-zinc-400 dark:group-hover:text-amber-400">
-                  {value.icon}
+
+          <div className="mt-14 grid gap-8 md:grid-cols-3">
+            {team.map((person) => (
+              <article key={person.name + person.role}>
+                <div className="group relative aspect-[3/4] overflow-hidden bg-[#242220]">
+                  <img
+                    src={person.image}
+                    alt={person.name}
+                    className="h-full w-full object-cover transition duration-700 group-hover:scale-[1.025]"
+                    onError={(e) => {
+                      e.currentTarget.style.display = "none";
+                    }}
+                  />
+
+                  <div
+                    className="absolute inset-x-0 bottom-0 p-5"
+                    style={{
+                      background:
+                        "linear-gradient(transparent, rgba(23,22,21,.88))",
+                    }}
+                  >
+                    <div className="flex items-end justify-between gap-4 pt-16">
+                      <div>
+                        <h3 className="text-xl font-black">{person.name}</h3>
+                        <p
+                          className="mt-1 text-[9px] font-black uppercase tracking-[.15em]"
+                          style={{ color: COLORS.clay }}
+                        >
+                          {person.role}
+                        </p>
+                      </div>
+
+                      <a
+                        href="#"
+                        className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-white/20"
+                      >
+                        <Link2 className="h-4 w-4" />
+                      </a>
+                    </div>
+                  </div>
                 </div>
-                <h3 className="mt-4 text-base font-semibold text-zinc-900 dark:text-white">{value.title}</h3>
-                <p className="mt-2 text-sm leading-6 text-zinc-600 dark:text-zinc-400">{value.description}</p>
-              </div>
+              </article>
             ))}
           </div>
         </div>
-      </div>
+      </section>
 
-      {/* Team Section */}
-      <div className="py-24 sm:py-32">
-        <div className="mx-auto max-w-7xl px-6 lg:px-8">
-          <div className="mx-auto max-w-2xl text-center">
-            <h2 className="text-base font-semibold uppercase tracking-wider text-amber-600 dark:text-amber-400">
-              The Team
-            </h2>
-            <p className="mt-3 text-3xl font-bold tracking-tight text-zinc-900 dark:text-white sm:text-4xl">
-              Meet the people behind the platform
-            </p>
-          </div>
-          <div className="mx-auto mt-16 grid max-w-4xl gap-8 sm:grid-cols-2 lg:grid-cols-4">
-            {team.map((member) => (
+      {/* =========================================================
+          PROOF
+      ========================================================= */}
+      <section className="py-24 sm:py-32">
+        <div className="mx-auto max-w-7xl px-5 sm:px-7 lg:px-10">
+          <div className="grid border-y sm:grid-cols-3" style={{ borderColor: "rgba(23,22,21,.12)" }}>
+            {[
+              ["100+", "Audit points", "Websites, funnels, follow-up and conversion."],
+              ["24/7", "System mindset", "Your business keeps responding when you can't."],
+              ["1", "Connected journey", "Capture → respond → book → retain."],
+            ].map(([number, title, text], index) => (
               <div
-                key={member.name}
-                className="group relative flex flex-col items-center rounded-2xl border border-zinc-200 bg-white p-6 text-center transition-all duration-300 hover:border-amber-500/30 hover:shadow-lg dark:border-zinc-800 dark:bg-zinc-900/50 dark:hover:border-amber-500/20"
+                key={title}
+                className={`px-2 py-10 sm:px-8 sm:py-12 ${
+                  index !== 2 ? "sm:border-r" : ""
+                }`}
+                style={{ borderColor: "rgba(23,22,21,.12)" }}
               >
                 <div
-                  className={`flex h-20 w-20 items-center justify-center rounded-full text-lg font-bold text-white shadow-lg transition-transform duration-300 group-hover:scale-110 ${member.color}`}
+                  className="text-5xl font-black tracking-[-.05em]"
+                  style={{ color: index === 1 ? COLORS.clay : COLORS.black }}
                 >
-                  {member.initials}
+                  {number}
                 </div>
-                <h3 className="mt-4 text-base font-semibold text-zinc-900 dark:text-white">{member.name}</h3>
-                <p className="mt-1 text-sm text-zinc-500 dark:text-zinc-400">{member.role}</p>
+
+                <div className="mt-4 text-xs font-black uppercase tracking-[.12em]">
+                  {title}
+                </div>
+
+                <p className="mt-3 max-w-xs text-xs leading-6 opacity-50">
+                  {text}
+                </p>
               </div>
             ))}
           </div>
         </div>
-      </div>
+      </section>
 
-      {/* CTA Section */}
-      <div className="pb-24 sm:pb-32">
-        <div className="mx-auto max-w-7xl px-6 lg:px-8">
-          <div className="relative isolate overflow-hidden rounded-3xl bg-gradient-to-br from-zinc-900 to-zinc-800 px-6 py-16 text-center shadow-2xl dark:from-zinc-800 dark:to-zinc-900 sm:px-16 sm:py-24">
-            <div className="pointer-events-none absolute -top-24 left-1/2 h-64 w-64 -translate-x-1/2 rounded-full bg-amber-500/20 blur-3xl" />
-            <h2 className="relative mx-auto max-w-2xl text-3xl font-bold tracking-tight text-white sm:text-4xl">
-              Ready to see what AI can do for your roofing business?
-            </h2>
-            <p className="relative mx-auto mt-6 max-w-xl text-lg leading-8 text-zinc-300">
-              Join 200+ California contractors already using StackBoardAI to qualify leads, automate follow-ups, and book more jobs.
-            </p>
-            <div className="relative mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row">
-              <a
-                href="#demo"
-                className="group inline-flex items-center justify-center gap-2 rounded-xl bg-amber-500 px-8 py-3.5 text-sm font-semibold text-zinc-900 shadow-lg shadow-amber-500/25 transition-all duration-300 hover:bg-amber-400 hover:shadow-amber-500/40 hover:scale-105 active:scale-95"
+      {/* =========================================================
+          FINAL STATEMENT
+      ========================================================= */}
+      <section className="pb-24 sm:pb-32">
+        <div className="mx-auto max-w-7xl px-5 sm:px-7 lg:px-10">
+          <div
+            className="relative overflow-hidden rounded-[32px] px-7 py-20 sm:px-12 sm:py-24 lg:px-20 lg:py-28"
+            style={{ backgroundColor: COLORS.sand }}
+          >
+            <div
+              className="absolute -right-32 -top-32 h-96 w-96 rounded-full blur-3xl"
+              style={{ backgroundColor: COLORS.taupe }}
+            />
+
+            <div className="relative max-w-4xl">
+              <div
+                className="text-[10px] font-black uppercase tracking-[.2em]"
+                style={{ color: COLORS.clay }}
               >
-                Schedule a Demo
-                <svg className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
-                </svg>
-              </a>
-              <a
-                href="#pricing"
-                className="inline-flex items-center justify-center rounded-xl border border-zinc-600 bg-transparent px-8 py-3.5 text-sm font-semibold text-white transition-all duration-300 hover:bg-zinc-700 hover:border-zinc-500"
-              >
-                View Pricing
-              </a>
+                05 — Let&apos;s work together
+              </div>
+
+              <h2 className="mt-6 text-5xl font-black leading-[.92] tracking-[-.055em] sm:text-6xl lg:text-8xl">
+                Build the system.
+                <br />
+                <span style={{ color: COLORS.clay }}>Grow the business.</span>
+              </h2>
+
+              <div className="mt-9 flex flex-col gap-5 sm:flex-row sm:items-center">
+                <button
+                  onClick={() => setModalOpen(true)}
+                  className="inline-flex items-center justify-center gap-2 rounded-full px-7 py-4 text-sm font-black"
+                  style={{
+                    backgroundColor: COLORS.black,
+                    color: COLORS.ivory,
+                  }}
+                >
+                  Get Started
+                  <ArrowRight className="h-4 w-4" />
+                </button>
+
+                <a
+                  href="/FreeGrowthAudit"
+                  className="text-sm font-black underline decoration-black/20 underline-offset-4"
+                >
+                  Or request a free growth audit
+                </a>
+              </div>
             </div>
           </div>
         </div>
-      </div>
-    </section>
+      </section>
+
+      <Footer />
+
+      <StartModal
+        open={modalOpen}
+        close={() => setModalOpen(false)}
+      />
+    </main>
   );
 }

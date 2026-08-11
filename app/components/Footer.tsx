@@ -1,226 +1,367 @@
 "use client";
 
+import {
+  ArrowUpRight,
+  BarChart3,
+  Bot,
+  BriefcaseBusiness,
+  CheckCircle2,
+  Link2,
+  Mail,
+  Sparkles,
+} from "lucide-react";
+
+const COLORS = {
+  ivory: "#F9F8F6",
+  sand: "#EFE9E3",
+  taupe: "#D9CFC7",
+  clay: "#C9B59C",
+  black: "#171615",
+};
+
+const serviceLinks = [
+  {
+    label: "AI Automation",
+    href: "#services",
+  },
+  {
+    label: "Sales Systems",
+    href: "#services",
+  },
+  {
+    label: "Marketing Automation",
+    href: "#services",
+  },
+  {
+    label: "Business Operations",
+    href: "#services",
+  },
+];
+
+const companyLinks = [
+  {
+    label: "How It Works",
+    href: "#process",
+  },
+  {
+    label: "Our Work",
+    href: "#work",
+  },
+  {
+    label: "Our Team",
+    href: "#team",
+  },
+  {
+    label: "Pricing",
+    href: "#pricing",
+  },
+  {
+    label: "FAQ",
+    href: "#faq",
+  },
+];
+
+const socialLinks = [
+  {
+    label: "LinkedIn",
+    href: "#",
+    icon: Link2,
+  },
+  {
+    label: "X",
+    href: "#",
+    icon: Sparkles,
+  },
+];
+
 export default function Footer() {
   const scrollToTop = () => {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth",
+    });
+  };
+
+  const scrollToRequest = () => {
+    document.getElementById("request")?.scrollIntoView({
+      behavior: "smooth",
+      block: "start",
+    });
   };
 
   return (
-    <footer className="relative w-full overflow-hidden border-t border-zinc-200 bg-[#F5F7FA] dark:border-zinc-800 dark:bg-[#0B0F19]">
-      {/* Decorative gradient orb */}
-      <div className="pointer-events-none absolute -top-40 right-0 h-96 w-96 rounded-full bg-[#FF6B35]/5 blur-3xl dark:bg-[#FF6B35]/10" />
-      <div className="pointer-events-none absolute -bottom-20 left-20 h-72 w-72 rounded-full bg-[#F7931E]/5 blur-3xl dark:bg-[#F7931E]/10" />
+    <footer
+      className="border-t"
+      style={{
+        backgroundColor: COLORS.black,
+        color: COLORS.ivory,
+        borderColor: "rgba(249, 248, 246, 0.12)",
+      }}
+    >
+      {/* =========================
+          MAIN FOOTER
+      ========================== */}
+      <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8 lg:py-20">
+        <div className="grid gap-12 lg:grid-cols-[1.5fr_1fr_1fr_1.2fr]">
 
-      <div className="relative mx-auto max-w-7xl px-6 pb-8 pt-20 lg:px-8">
-        {/* Top CTA Section */}
-        <div className="mb-16 rounded-2xl bg-gradient-to-br from-[#0B0F19] to-zinc-800 p-8 dark:from-zinc-900 dark:to-[#0B0F19] sm:p-12 lg:p-16">
-          <div className="mx-auto max-w-2xl text-center">
-            <h2 className="text-2xl font-bold tracking-tight text-white sm:text-3xl">
-              Ready to scale your roofing business?
-            </h2>
-            <p className="mt-4 text-zinc-300">
-              Join 200+ California contractors already using StackBoardAI to qualify and dispatch leads automatically.
-            </p>
-            <div className="mt-8 flex flex-col gap-4 sm:flex-row sm:justify-center">
-              <a
-                href="#demo"
-                className="group inline-flex items-center justify-center gap-2 rounded-xl bg-[#FF6B35] px-8 py-3.5 text-sm font-semibold text-[#0B0F19] shadow-lg shadow-[#FF6B35]/25 transition-all duration-300 hover:bg-[#F7931E] hover:shadow-[#FF6B35]/40 hover:scale-105 active:scale-95"
+          {/* =========================
+              BRAND
+          ========================== */}
+          <div>
+            <a
+              href="#"
+              className="group inline-flex items-center gap-3"
+            >
+              {/* STACKBOARDAI LOGO MARK */}
+              <div
+                className="flex h-11 w-11 items-center justify-center"
+                aria-hidden="true"
               >
-                Schedule a Demo
-                <svg className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
-                </svg>
-              </a>
-              <a
-                href="#pricing"
-                className="inline-flex items-center justify-center rounded-xl border border-zinc-600 bg-transparent px-8 py-3.5 text-sm font-semibold text-white transition-all duration-300 hover:bg-zinc-700 hover:border-zinc-500"
-              >
-                View Pricing
-              </a>
-            </div>
-          </div>
-        </div>
-
-        <div className="xl:grid xl:grid-cols-12 xl:gap-12">
-          {/* Brand Column - Wider */}
-          <div className="xl:col-span-5">
-            <div className="flex items-center gap-3">
-              <div className="relative flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-[#F7931E] to-[#FF6B35] font-black text-[#0B0F19] shadow-lg shadow-[#FF6B35]/30">
-                <span className="relative z-10">S</span>
-                <div className="absolute inset-0 rounded-xl bg-white/20 opacity-0 transition-opacity duration-300 hover:opacity-100" />
-              </div>
-              <span className="text-xl font-bold tracking-tight text-zinc-900 dark:text-white">
-                StackBoard<span className="text-[#FF6B35]">AI</span>
-              </span>
-            </div>
-            
-            <p className="mt-5 max-w-sm text-sm leading-7 text-zinc-600 dark:text-zinc-400">
-              AI-driven lead qualification and dispatch automation tailored specifically for licensed California roofing contractors. CSLB-compliant, SOC 2 ready.
-            </p>
-
-            {/* Status Badge */}
-            <div className="mt-6 inline-flex items-center gap-2.5 rounded-full border border-[#FF6B35]/20 bg-[#FF6B35]/5 px-4 py-2 text-xs font-medium text-[#FF6B35]">
-              <span className="relative flex h-2.5 w-2.5">
-                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[#F7931E] opacity-75"></span>
-                <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-[#FF6B35]"></span>
-              </span>
-              <span>All Systems Operational</span>
-              <span className="text-zinc-400 dark:text-zinc-500">•</span>
-              <span className="text-zinc-500 dark:text-zinc-500">99.9% Uptime</span>
-            </div>
-
-            {/* Social Links */}
-            <div className="mt-8 flex gap-4">
-              {[
-                { name: 'Twitter', icon: 'M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z' },
-                { name: 'LinkedIn', icon: 'M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z' },
-                { name: 'GitHub', icon: 'M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z' }
-              ].map((social) => (
-                <a
-                  key={social.name}
-                  href="#"
-                  className="group flex h-10 w-10 items-center justify-center rounded-lg border border-zinc-200 bg-zinc-50 text-zinc-500 transition-all duration-300 hover:border-[#FF6B35]/50 hover:bg-[#FF6B35]/10 hover:text-[#FF6B35] dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-400 dark:hover:border-[#FF6B35]/50 dark:hover:bg-[#FF6B35]/10 dark:hover:text-[#FF6B35]"
-                  aria-label={social.name}
+                <svg
+                  width="44"
+                  height="44"
+                  viewBox="0 0 36 36"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="transition-transform duration-300 group-hover:scale-105"
                 >
-                  <svg className="h-4 w-4 fill-current transition-transform duration-300 group-hover:scale-110" viewBox="0 0 24 24">
-                    <path d={social.icon} />
-                  </svg>
-                </a>
+                  {/* Top module */}
+                  <path
+                    d="M18 4L29 10L18 16L7 10L18 4Z"
+                    fill="#F9F8F6"
+                    className="transition-transform duration-500 group-hover:-translate-y-[1px]"
+                  />
+
+                  {/* Middle module */}
+                  <path
+                    d="M7 13L18 19L29 13V19L18 25L7 19V13Z"
+                    fill="#F9F8F6"
+                    opacity="0.78"
+                    className="transition-transform duration-500 group-hover:translate-x-[1px]"
+                  />
+
+                  {/* Bottom module */}
+                  <path
+                    d="M7 22L18 28L29 22V28L18 34L7 28V22Z"
+                    fill="#C9B59C"
+                    className="transition-transform duration-500 group-hover:translate-y-[1px]"
+                  />
+                </svg>
+              </div>
+
+              {/* WORDMARK */}
+              <span className="text-xl font-black tracking-[-0.045em]">
+                Stackboard
+                <span
+                  className="ml-[2px]"
+                  style={{
+                    color: COLORS.clay,
+                  }}
+                >
+                  AI
+                </span>
+              </span>
+            </a>
+
+            <p
+              className="mt-6 max-w-sm text-sm leading-7"
+              style={{
+                color: "rgba(249, 248, 246, 0.62)",
+              }}
+            >
+              AI-powered systems and automation that help
+              businesses operate faster, sell better, and
+              scale without unnecessary complexity.
+            </p>
+
+            {/* SOCIAL */}
+            <div className="mt-7 flex items-center gap-3">
+              {socialLinks.map((social) => {
+                const Icon = social.icon;
+
+                return (
+                  <a
+                    key={social.label}
+                    href={social.href}
+                    aria-label={social.label}
+                    className="flex h-10 w-10 items-center justify-center rounded-full border transition-all duration-200 hover:bg-white hover:text-black"
+                    style={{
+                      borderColor:
+                        "rgba(249, 248, 246, 0.18)",
+                    }}
+                  >
+                    <Icon className="h-4 w-4" />
+                  </a>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* =========================
+              SERVICES
+          ========================== */}
+          <div>
+            <h3 className="text-sm font-black uppercase tracking-[0.12em]">
+              Solutions
+            </h3>
+
+            <ul className="mt-5 space-y-3">
+              {serviceLinks.map((link) => (
+                <li key={link.href + link.label}>
+                  <a
+                    href={link.href}
+                    className="group flex items-center gap-2 text-sm transition-opacity hover:opacity-60"
+                    style={{
+                      color: "rgba(249, 248, 246, 0.68)",
+                    }}
+                  >
+                    {link.label}
+
+                    <ArrowUpRight className="h-3.5 w-3.5 opacity-0 transition-all group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:opacity-100" />
+                  </a>
+                </li>
               ))}
-            </div>
+            </ul>
           </div>
 
-          {/* Link Columns */}
-          <div className="mt-12 grid grid-cols-2 gap-8 sm:grid-cols-3 xl:col-span-7 xl:mt-0">
-            {/* Product */}
-            <div>
-              <h3 className="text-sm font-semibold uppercase tracking-wider text-zinc-900 dark:text-white">
-                Product
-              </h3>
-              <ul className="mt-6 space-y-4">
-                {[
-                  'Wildfire Intelligence',
-                  'Solar + Roof Bundles',
-                  'HOA & Permit Checks',
-                  'Instant SMS Responder',
-                  'Lead Scoring AI',
-                  'Dispatch Automation'
-                ].map((item) => (
-                  <li key={item}>
-                    <a
-                      href="#features"
-                      className="group relative inline-flex items-center text-sm text-zinc-600 transition-colors duration-200 hover:text-[#FF6B35] dark:text-zinc-400 dark:hover:text-[#FF6B35]"
-                    >
-                      <span className="absolute -left-3 h-1.5 w-1.5 rounded-full bg-[#FF6B35] opacity-0 transition-all duration-200 group-hover:opacity-100" />
-                      {item}
-                    </a>
-                  </li>
-                ))}
-              </ul>
-            </div>
+          {/* =========================
+              COMPANY
+          ========================== */}
+          <div>
+            <h3 className="text-sm font-black uppercase tracking-[0.12em]">
+              Company
+            </h3>
 
-            {/* Markets */}
-            <div>
-              <h3 className="text-sm font-semibold uppercase tracking-wider text-zinc-900 dark:text-white">
-                Top CA Markets
-              </h3>
-              <ul className="mt-6 space-y-4">
-                {[
-                  'Los Angeles & OC',
-                  'Bay Area & Sonoma',
-                  'San Diego County',
-                  'Sacramento & Valley',
-                  'Central Coast',
-                  'Inland Empire'
-                ].map((item) => (
-                  <li key={item}>
-                    <a
-                      href="#"
-                      className="group relative inline-flex items-center text-sm text-zinc-600 transition-colors duration-200 hover:text-[#FF6B35] dark:text-zinc-400 dark:hover:text-[#FF6B35]"
-                    >
-                      <span className="absolute -left-3 h-1.5 w-1.5 rounded-full bg-[#FF6B35] opacity-0 transition-all duration-200 group-hover:opacity-100" />
-                      {item}
-                    </a>
-                  </li>
-                ))}
-              </ul>
-            </div>
+            <ul className="mt-5 space-y-3">
+              {companyLinks.map((link) => (
+                <li key={link.href + link.label}>
+                  <a
+                    href={link.href}
+                    className="group flex items-center gap-2 text-sm transition-opacity hover:opacity-60"
+                    style={{
+                      color: "rgba(249, 248, 246, 0.68)",
+                    }}
+                  >
+                    {link.label}
 
-            {/* Company */}
-            <div className="col-span-2 sm:col-span-1">
-              <h3 className="text-sm font-semibold uppercase tracking-wider text-zinc-900 dark:text-white">
-                Company
-              </h3>
-              <ul className="mt-6 space-y-4">
-                {[
-                  { label: 'About Us', href: '#' },
-                  { label: 'Privacy Policy', href: '#' },
-                  { label: 'Terms of Service', href: '#' },
-                  { label: 'Contact Support', href: '#' },
-                  { label: 'System Status', href: '#' },
-                  { label: 'Changelog', href: '#' }
-                ].map((item) => (
-                  <li key={item.label}>
-                    <a
-                      href={item.href}
-                      className="group relative inline-flex items-center text-sm text-zinc-600 transition-colors duration-200 hover:text-[#FF6B35] dark:text-zinc-400 dark:hover:text-[#FF6B35]"
-                    >
-                      <span className="absolute -left-3 h-1.5 w-1.5 rounded-full bg-[#FF6B35] opacity-0 transition-all duration-200 group-hover:opacity-100" />
-                      {item.label}
-                    </a>
-                  </li>
-                ))}
-              </ul>
-            </div>
+                    <ArrowUpRight className="h-3.5 w-3.5 opacity-0 transition-all group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:opacity-100" />
+                  </a>
+                </li>
+              ))}
+            </ul>
           </div>
-        </div>
 
-        {/* Newsletter Section */}
-        <div className="mt-16 rounded-2xl border border-zinc-200 bg-zinc-50/50 p-8 dark:border-zinc-800 dark:bg-zinc-900/30">
-          <div className="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
-            <div>
-              <h3 className="text-base font-semibold text-zinc-900 dark:text-white">
-                Stay updated on California roofing tech
-              </h3>
-              <p className="mt-1 text-sm text-zinc-500 dark:text-zinc-400">
-                Get weekly insights on AI lead qualification, CSLB updates, and market trends.
-              </p>
-            </div>
-            <form className="flex w-full max-w-md gap-3" onSubmit={(e) => e.preventDefault()}>
-              <input
-                type="email"
-                placeholder="Enter your email"
-                className="flex-1 rounded-lg border border-zinc-300 bg-white px-4 py-2.5 text-sm text-zinc-900 placeholder-zinc-400 outline-none transition-all duration-200 focus:border-[#FF6B35] focus:ring-2 focus:ring-[#FF6B35]/20 dark:border-zinc-700 dark:bg-zinc-800 dark:text-white dark:placeholder-zinc-500 dark:focus:border-[#FF6B35]"
+          {/* =========================
+              CONTACT / CTA
+          ========================== */}
+          <div>
+            <h3 className="text-sm font-black uppercase tracking-[0.12em]">
+              Let's Talk
+            </h3>
+
+            <p
+              className="mt-5 text-sm leading-7"
+              style={{
+                color: "rgba(249, 248, 246, 0.68)",
+              }}
+            >
+              Have a process you want to automate?
+              Let's talk about what StackboardAI can
+              build for your business.
+            </p>
+
+            {/* EMAIL */}
+            <a
+              href="mailto:hello@stackboardai.com"
+              className="mt-5 flex items-center gap-3 text-sm font-semibold transition-opacity hover:opacity-60"
+              style={{
+                color: "rgba(249, 248, 246, 0.82)",
+              }}
+            >
+              <Mail
+                className="h-4 w-4 shrink-0"
+                style={{
+                  color: COLORS.clay,
+                }}
               />
-              <button
-                type="submit"
-                className="rounded-lg bg-zinc-900 px-5 py-2.5 text-sm font-medium text-white transition-all duration-200 hover:bg-zinc-800 hover:scale-105 active:scale-95 dark:bg-[#FF6B35] dark:text-[#0B0F19] dark:hover:bg-[#F7931E]"
-              >
-                Subscribe
-              </button>
-            </form>
+
+              hello@stackboardai.com
+            </a>
+
+            {/* CTA */}
+            <button
+              type="button"
+              onClick={scrollToRequest}
+              className="mt-7 inline-flex items-center gap-2 rounded-full px-5 py-3 text-sm font-black transition-all duration-200 hover:opacity-80"
+              style={{
+                backgroundColor: COLORS.ivory,
+                color: COLORS.black,
+              }}
+            >
+              Book a Call
+
+              <ArrowUpRight className="h-4 w-4" />
+            </button>
           </div>
         </div>
+      </div>
 
-        {/* Bottom Bar */}
-        <div className="mt-12 flex flex-col items-center justify-between gap-6 border-t border-zinc-200 pt-8 dark:border-zinc-800 sm:flex-row">
-          <p className="text-xs text-zinc-500 dark:text-zinc-500">
-            &copy; {new Date().getFullYear()} StackBoardAI Inc. All rights reserved. Built for California roofing professionals.
+      {/* =========================
+          BOTTOM BAR
+      ========================== */}
+      <div
+        className="border-t"
+        style={{
+          borderColor:
+            "rgba(249, 248, 246, 0.12)",
+        }}
+      >
+        <div className="mx-auto flex max-w-7xl flex-col gap-4 px-4 py-6 sm:px-6 md:flex-row md:items-center md:justify-between lg:px-8">
+
+          {/* COPYRIGHT */}
+          <p
+            className="text-xs"
+            style={{
+              color: "rgba(249, 248, 246, 0.45)",
+            }}
+          >
+            © {new Date().getFullYear()} StackboardAI.
+            All rights reserved.
           </p>
-          
-          <div className="flex items-center gap-6">
-            <span className="flex items-center gap-2 text-xs text-zinc-500 dark:text-zinc-500">
-              <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse" />
-              All Systems Operational
-            </span>
+
+          {/* LEGAL / BACK TO TOP */}
+          <div className="flex flex-wrap items-center gap-5">
+            <a
+              href="#"
+              className="text-xs transition-opacity hover:opacity-70"
+              style={{
+                color: "rgba(249, 248, 246, 0.45)",
+              }}
+            >
+              Privacy Policy
+            </a>
+
+            <a
+              href="#"
+              className="text-xs transition-opacity hover:opacity-70"
+              style={{
+                color: "rgba(249, 248, 246, 0.45)",
+              }}
+            >
+              Terms
+            </a>
+
             <button
+              type="button"
               onClick={scrollToTop}
-              className="group flex items-center gap-1.5 text-xs font-medium text-zinc-500 transition-colors duration-200 hover:text-[#FF6B35] dark:text-zinc-500 dark:hover:text-[#FF6B35]"
+              className="flex items-center gap-2 text-xs transition-opacity hover:opacity-70"
+              style={{
+                color: "rgba(249, 248, 246, 0.65)",
+              }}
             >
               Back to top
-              <svg className="h-3.5 w-3.5 transition-transform duration-300 group-hover:-translate-y-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 10l7-7m0 0l7 7m-7-7v18" />
-              </svg>
+
+              <ArrowUpRight className="h-3.5 w-3.5" />
             </button>
           </div>
         </div>

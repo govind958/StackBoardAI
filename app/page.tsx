@@ -1,953 +1,2279 @@
 "use client";
 
 import { useState } from "react";
-import Navbar from "@/app/components/Navbar";
-import Footer from "@/app/components/Footer";
 
-/* ───────────────────────────────────────────────
-   DATA
-   ─────────────────────────────────────────────── */
+import ChatWidget from "./components/ChatWidget";
+import Navbar from "./components/Navbar";
+import Footer from "./components/Footer";
 
-const stats = [
-  { value: "2,400+", label: "California Roofers" },
-  { value: "48%", label: "Avg. Lead Increase" },
-  { value: "< 2 min", label: "Response Time" },
-  { value: "$3.2M", label: "Revenue Generated" },
+import {
+  ArrowRight,
+  ArrowUpRight,
+  Check,
+  CheckCircle2,
+  ChevronDown,
+  Clock3,
+  Leaf,
+  Mail,
+  Phone,
+  ShieldCheck,
+  Sparkles,
+  Star,
+  Tag,
+  Trees,
+} from "lucide-react";
+
+const COLORS = {
+  ivory: "#F9F8F6",
+  sand: "#EFE9E3",
+  taupe: "#D9CFC7",
+  clay: "#C9B59C",
+  black: "#171615",
+};
+
+const images = {
+  hero:
+    "https://images.unsplash.com/photo-1770932537112-a7b24b062bf2?w=900&auto=format&fit=crop&q=60&ixlib=rb-4.1.0",
+
+  garden:
+    "https://images.unsplash.com/photo-1558521958-0a228e77e984?auto=format&fit=crop&w=1400&q=85",
+
+  team1:
+    "https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&w=700&q=85",
+
+  team2:
+    "https://images.unsplash.com/photo-1580489944761-15a19d654956?auto=format&fit=crop&w=700&q=85",
+
+  team3:
+    "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=700&q=85",
+
+  project1:
+    "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=1200&q=85",
+
+  project2:
+    "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?auto=format&fit=crop&w=1200&q=85",
+
+  project3:
+    "https://images.unsplash.com/photo-1598902108854-10e335adac99?auto=format&fit=crop&w=1200&q=85",
+
+  project4:
+    "https://images.unsplash.com/photo-1558521958-0a228e77e984?auto=format&fit=crop&w=1600&q=85",
+
+  project5:
+    "https://images.unsplash.com/photo-1585320806297-9794b3e4eeae?auto=format&fit=crop&w=1200&q=85",
+
+  project6:
+    "https://images.unsplash.com/photo-1592150621744-aca64f48394a?auto=format&fit=crop&w=1200&q=85",
+};
+
+const needs = [
+  {
+    title: "I need a new landscape",
+    description: "Design and build a yard you'll actually want to use.",
+    icon: Trees,
+  },
+  {
+    title: "My yard needs a refresh",
+    description: "Cleanups, planting, mulch, beds, pruning and more.",
+    icon: Sparkles,
+  },
+  {
+    title: "I need regular maintenance",
+    description: "Keep everything looking cared for all season.",
+    icon: Leaf,
+  },
 ];
-const steps = [
+
+const services = [
   {
-    step: "01",
-    title: "Capture",
-    desc: "Leads flow in from your website, Google Ads, Angi, and social media. Our system ingests them instantly — no more manual entry.",
+    title: "Landscape Design",
+    text: "A thoughtful plan for planting, beds, outdoor living and curb appeal.",
   },
   {
-    step: "02",
-    title: "Qualify",
-    desc: "AI scores every lead based on roof age, property type, location, and urgency. Hot leads get flagged immediately for your team.",
+    title: "Landscape Installation",
+    text: "Plants, trees, mulch, edging, beds and outdoor spaces installed properly.",
   },
   {
-    step: "03",
-    title: "Convert",
-    desc: "Automated follow-ups via SMS, email, and voicemail keep prospects warm until they're ready for your inspection team.",
+    title: "Lawn & Yard Care",
+    text: "Reliable mowing, seasonal cleanup, pruning and ongoing maintenance.",
+  },
+  {
+    title: "Seasonal Cleanup",
+    text: "Spring and fall cleanup that gets your property looking right again.",
   },
 ];
 
-const trustItems = [
-  "No credit card",
-  "14-day free trial",
-  "Cancel anytime",
-  "Bonded & Insured",
+const process = [
+  [
+    "01",
+    "Tell us what you want",
+    "Choose the closest match. You don't need to know the landscaping terms.",
+  ],
+  [
+    "02",
+    "Walk the property with us",
+    "We'll look at the space, listen to what matters and recommend practical options.",
+  ],
+  [
+    "03",
+    "Get a simple plan",
+    "You get a clear scope, next steps and an estimate before work begins.",
+  ],
 ];
 
-const press = [
+const reviews = [
   {
-    tag: "Featured",
-    date: "Dec 2024",
-    title: "How StackBoardAI is Revolutionizing Roofing Lead Management",
-    author: "Sarah Mitchell",
-    excerpt: "A deep dive into how AI automation is transforming the roofing industry and helping contractors scale faster.",
-    publication: "Roofing Today",
-    image: "https://images.unsplash.com/photo-1552664730-d307ca884978?w=800&h=600&fit=crop",
+    name: "Sarah M.",
+    location: "Local homeowner",
+    text:
+      "They actually listened to what we wanted instead of trying to sell us a huge project. The yard feels completely different.",
   },
   {
-    tag: "Case Study",
-    date: "Nov 2024",
-    title: "From 5 Leads/Month to 47 in One Season",
-    author: "James Rodriguez",
-    excerpt: "Golden State Roofing shares their success story using wildfire targeting and AI lead scoring.",
-    publication: "Contractor Weekly",
-    image: "https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=800&h=600&fit=crop",
+    name: "Mike R.",
+    location: "Local homeowner",
+    text:
+      "The crew showed up when they said they would, worked cleanly and left the property looking fantastic.",
+  },
+  {
+    name: "Jennifer K.",
+    location: "Local homeowner",
+    text:
+      "From the first walk-through to the finished beds, the whole process was easy. Exactly what we wanted.",
   },
 ];
 
-/* ───────────────────────────────────────────────
-   COMPONENTS
-   ─────────────────────────────────────────────── */
+const marqueeReviews = [
+  {
+    title: "Best on the market",
+    text: "I love this company because the support is great. Please...",
+    name: "John Contractor",
+  },
+  {
+    title: "Exactly what we needed",
+    text:
+      "The process was simple, communication was excellent and everything worked exactly as promised.",
+    name: "Michael R.",
+  },
+  {
+    title: "Highly recommended",
+    text:
+      "Very professional from start to finish. Everything was simple and easy to understand.",
+    name: "Sarah M.",
+  },
+  {
+    title: "A huge improvement",
+    text:
+      "Finally a marketing system that makes sense for a contractor. Simple, clean and effective.",
+    name: "David T.",
+  },
+];
 
-function CheckIcon() {
-  return (
-    <svg className="h-3 w-3 text-[#0B0F19]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
-      <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-    </svg>
+const faqs = [
+  [
+    "Do you offer free estimates?",
+    "Yes. Start by telling us what you're looking for and we'll let you know the best next step for your property.",
+  ],
+  [
+    "Can you help if I don't know what I want?",
+    "Absolutely. That's one of the reasons for the initial walkthrough. Tell us what you dislike about the yard and what you want it to feel like.",
+  ],
+  [
+    "Do you handle ongoing maintenance?",
+    "Yes. Maintenance can be arranged separately from design and installation, depending on the services available in your area.",
+  ],
+  [
+    "How soon can you start?",
+    "Availability depends on the season and project size. We'll give you a realistic timeline after learning about the project.",
+  ],
+];
+
+const GoogleIcon = () => (
+  <svg
+    viewBox="0 0 24 24"
+    className="h-5 w-5"
+    aria-hidden="true"
+  >
+    <path
+      fill="#4285F4"
+      d="M21.35 12.27c0-.79-.07-1.55-.2-2.27H12v4.3h5.24a4.48 4.48 0 0 1-1.94 2.94v2.45h3.14c1.84-1.69 2.91-4.18 2.91-7.42Z"
+    />
+    <path
+      fill="#34A853"
+      d="M12 21.5c2.63 0 4.84-.87 6.45-2.36l-3.14-2.45c-.87.58-1.98.92-3.31.92-2.54 0-4.7-1.72-5.47-4.03H3.29v2.53A9.74 9.74 0 0 0 12 21.5Z"
+    />
+    <path
+      fill="#FBBC05"
+      d="M6.53 13.58A5.86 5.86 0 0 1 6.22 12c0-.55.11-1.08.31-1.58V7.89H3.29A9.5 9.5 0 0 0 2.5 12c0 1.48.35 2.88.79 4.11l3.24-2.53Z"
+    />
+    <path
+      fill="#EA4335"
+      d="M12 6.39c1.43 0 2.71.49 3.72 1.45l2.79-2.79C16.84 3.46 14.63 2.5 12 2.5a9.74 9.74 0 0 0-8.71 5.39l3.24 2.53C7.3 8.11 9.46 6.39 12 6.39Z"
+    />
+  </svg>
+);
+
+export default function LandscapingLandingPage() {
+  const [selectedNeed, setSelectedNeed] = useState<string | null>(null);
+  const [openFaq, setOpenFaq] = useState<number>(0);
+  const [isReviewsPaused, setIsReviewsPaused] = useState(false);
+
+  const scrollToRequest = (need?: string) => {
+    if (need) {
+      setSelectedNeed(need);
+    }
+
+    requestAnimationFrame(() => {
+      document.getElementById("request")?.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+      });
+    });
+  };
+
+  const ReviewCard = ({
+    title,
+    text,
+    name,
+  }: {
+    title: string;
+    text: string;
+    name: string;
+  }) => (
+    <article
+      className="flex h-[175px] w-[310px] shrink-0 flex-col rounded-xl border p-5 shadow-sm"
+      style={{
+        backgroundColor: COLORS.ivory,
+        borderColor: "rgba(23,22,21,.10)",
+      }}
+    >
+      <div className="flex items-center justify-between gap-3">
+        <div className="flex gap-1">
+          {[1, 2, 3, 4, 5].map((star) => (
+            <div
+              key={star}
+              className="flex h-4 w-4 items-center justify-center"
+              style={{
+                backgroundColor: COLORS.clay,
+              }}
+            >
+              <Star
+                className="h-2.5 w-2.5 fill-current"
+                style={{
+                  color: COLORS.ivory,
+                }}
+              />
+            </div>
+          ))}
+        </div>
+
+        <span
+          className="text-[10px]"
+          style={{
+            color: "rgba(23,22,21,.45)",
+          }}
+        >
+          2 days ago
+        </span>
+      </div>
+
+      <h3 className="mt-3 text-sm font-black">{title}</h3>
+
+      <p
+        className="mt-2 line-clamp-2 text-xs leading-relaxed"
+        style={{
+          color: "rgba(23,22,21,.60)",
+        }}
+      >
+        {text}
+      </p>
+
+      <div className="mt-auto pt-3 text-[11px] font-black">
+        {name}
+      </div>
+    </article>
   );
-}
 
-/* ───────────────────────────────────────────────
-   PAGE
-   ─────────────────────────────────────────────── */
+  const RatingCard = () => (
+    <div
+      className="flex h-[175px] w-[225px] shrink-0 flex-col items-center justify-center rounded-xl border p-5 text-center shadow-sm"
+      style={{
+        backgroundColor: COLORS.ivory,
+        borderColor: "rgba(23,22,21,.10)",
+      }}
+    >
+      <div className="text-sm font-black">Excellent</div>
 
-export default function Home() {
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [openFaq, setOpenFaq] = useState<number | null>(0);
+      <div className="mt-3 flex gap-1">
+        {[1, 2, 3, 4, 5].map((star) => (
+          <div
+            key={star}
+            className="flex h-7 w-7 items-center justify-center"
+            style={{
+              backgroundColor: COLORS.clay,
+            }}
+          >
+            <Star
+              className="h-4 w-4 fill-current"
+              style={{
+                color: COLORS.ivory,
+              }}
+            />
+          </div>
+        ))}
+      </div>
+
+      <p
+        className="mt-3 text-[11px]"
+        style={{
+          color: "rgba(23,22,21,.55)",
+        }}
+      >
+        Based on{" "}
+        <span className="font-black underline">456 reviews</span>
+      </p>
+
+      <div className="mt-2 flex items-center gap-1">
+        <Star
+          className="h-4 w-4 fill-current"
+          style={{
+            color: COLORS.clay,
+          }}
+        />
+
+        <span className="text-xs font-black">Trustpilot</span>
+      </div>
+    </div>
+  );
 
   return (
-    <div className="flex min-h-screen flex-col bg-[#0B0F19] font-sans text-white">
-      <Navbar />
+    <main
+      className="min-h-screen"
+      style={{
+        backgroundColor: COLORS.ivory,
+        color: COLORS.black,
+        fontFamily: "Inter, ui-sans-serif, system-ui, sans-serif",
+      }}
+    >
+      <style jsx>{`
+        .review-marquee {
+          animation: reviewScroll 35s linear infinite;
+          will-change: transform;
+        }
 
-      <main className="flex w-full flex-1 flex-col items-center">
-        {/* ═══════════════════════════════════════
-            HERO
-            ═══════════════════════════════════════ */}
-        <section className="w-full px-6 pt-20 pb-16 text-center sm:pt-28 sm:pb-20 lg:pt-36 lg:pb-28">
-          <div className="mx-auto max-w-4xl">
-            {/* Trust Badge */}
-            <div className="mb-6 inline-flex flex-wrap items-center justify-center gap-2 rounded-full border border-white/10 bg-white/5 px-4 py-2">
-              <span className="text-yellow-400 text-sm">★★★★★</span>
-              <span className="text-sm text-zinc-300">
-                Trusted by <span className="font-semibold text-white">2,400+</span> CA roofers
-              </span>
-              <span className="ml-1 text-sm font-bold text-white">4.9</span>
+        .review-marquee.paused {
+          animation-play-state: paused;
+        }
+
+        .logo-marquee {
+          animation: logoScroll 30s linear infinite;
+          will-change: transform;
+        }
+
+        @keyframes reviewScroll {
+          from {
+            transform: translateX(0);
+          }
+
+          to {
+            transform: translateX(-50%);
+          }
+        }
+
+        @keyframes logoScroll {
+          from {
+            transform: translateX(0);
+          }
+
+          to {
+            transform: translateX(-50%);
+          }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+          .review-marquee,
+          .logo-marquee {
+            animation: none;
+          }
+        }
+      `}</style>
+
+      {/* NAVBAR */}
+
+      <Navbar  />
+
+      {/* HERO */}
+
+      <section className="relative overflow-hidden bg-[#F9F8F6]">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div className="grid min-h-[640px] items-center gap-10 py-12 sm:py-16 lg:grid-cols-[1fr_.9fr] lg:gap-14 lg:py-20">
+            {/* LEFT */}
+
+            <div className="relative z-10 max-w-2xl">
+              <div
+                className="mb-4 inline-flex items-center gap-2 rounded-full border px-3 py-1.5 text-[10px] font-black uppercase tracking-[.16em]"
+                style={{
+                  backgroundColor: "rgba(249,248,246,.85)",
+                  borderColor: "rgba(23,22,21,.10)",
+                }}
+              >
+                <CheckCircle2
+                  className="h-3.5 w-3.5"
+                  style={{ color: COLORS.clay }}
+                />
+
+                Built For Contractors
+              </div>
+
+              <h1 className="max-w-2xl text-4xl font-black leading-[.98] tracking-tight sm:text-5xl lg:text-6xl">
+                Website Design &{" "}
+                <span
+                  className="block"
+                  style={{ color: COLORS.clay }}
+                >
+                  Marketing Systems
+                </span>
+                For Contractors
+              </h1>
+
+              <div className="mt-6 max-w-xl">
+                <h2 className="text-xl font-black leading-tight tracking-tight sm:text-2xl">
+                  Cut the bullsh*t, Marketing isn't rocket science.
+                </h2>
+
+                <p
+                  className="mt-3 max-w-xl text-sm leading-relaxed sm:text-base"
+                  style={{
+                    color: "rgba(23,22,21,.68)",
+                  }}
+                >
+                  No agency... including ours, has the miracle solution
+                  to all your problems. We'll give you the tools to win
+                  but you need to commit to using them!
+                </p>
+              </div>
+
+              {/* SOCIAL PROOF */}
+
+              <div className="mt-6 flex flex-wrap items-center gap-4">
+                <div className="flex items-center">
+                  {[
+                    {
+                      initials: "JD",
+                      position: "z-40",
+                    },
+                    {
+                      initials: "MK",
+                      position: "z-30",
+                    },
+                    {
+                      initials: "AR",
+                      position: "z-20",
+                    },
+                    {
+                      initials: "TS",
+                      position: "z-10",
+                    },
+                  ].map((person, index) => (
+                    <div
+                      key={index}
+                      className={`-ml-2 first:ml-0 ${person.position} flex h-9 w-9 items-center justify-center rounded-full border-2 border-[#F9F8F6] text-[10px] font-black`}
+                      style={{
+                        backgroundColor:
+                          index === 0
+                            ? COLORS.black
+                            : index === 1
+                            ? COLORS.clay
+                            : index === 2
+                            ? "#D8D0C8"
+                            : "#B7ADA3",
+                        color:
+                          index === 0
+                            ? COLORS.ivory
+                            : COLORS.black,
+                      }}
+                    >
+                      {person.initials}
+                    </div>
+                  ))}
+                </div>
+
+                <div className="flex items-center gap-1">
+                  {[1, 2, 3, 4].map((star) => (
+                    <Star
+                      key={star}
+                      className="h-4 w-4 fill-current"
+                      style={{ color: COLORS.clay }}
+                    />
+                  ))}
+
+                  <div className="relative h-4 w-4 overflow-hidden">
+                    <Star
+                      className="absolute inset-0 h-4 w-4"
+                      style={{ color: COLORS.clay }}
+                    />
+
+                    <div
+                      className="absolute left-0 top-0 h-full w-1/2 overflow-hidden"
+                      style={{
+                        backgroundColor: COLORS.clay,
+                      }}
+                    >
+                      <Star
+                        className="h-4 w-4 fill-current"
+                        style={{ color: COLORS.clay }}
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                <div className="text-sm">
+                  <span className="font-black">4.5/5</span>
+
+                  <span
+                    className="ml-1"
+                    style={{
+                      color: "rgba(23,22,21,.55)",
+                    }}
+                  >
+                    from contractors
+                  </span>
+                </div>
+              </div>
+
+              {/* CTA */}
+
+              <div className="mt-6 flex flex-col gap-3 sm:flex-row">
+                <button
+                  type="button"
+                  onClick={() => scrollToRequest()}
+                  className="group flex items-center justify-center gap-2 rounded-full px-5 py-3 text-sm font-black uppercase tracking-wide transition-all duration-300 hover:-translate-y-0.5 hover:opacity-85"
+                  style={{
+                    backgroundColor: COLORS.black,
+                    color: COLORS.ivory,
+                  }}
+                >
+                  Book a Call
+
+                  <span
+                    className="flex h-7 w-7 items-center justify-center rounded-full"
+                    style={{
+                      backgroundColor: COLORS.ivory,
+                      color: COLORS.black,
+                    }}
+                  >
+                    <Phone className="h-4 w-4" />
+                  </span>
+                </button>
+
+                <a
+                  href="#services"
+                  className="flex items-center justify-center gap-2 rounded-full border px-5 py-3 text-sm font-black uppercase tracking-wide transition-all duration-300 hover:bg-white"
+                  style={{
+                    borderColor: COLORS.black,
+                    backgroundColor: "rgba(249,248,246,.55)",
+                  }}
+                >
+                  See What We Do
+
+                  <ArrowUpRight className="h-4 w-4" />
+                </a>
+              </div>
+
+              {/* TRUST POINTS */}
+
+              <div className="mt-6 flex max-w-xl flex-wrap gap-x-5 gap-y-2">
+                {[
+                  "Built for contractors",
+                  "Clear pricing",
+                  "No long-term contracts",
+                  "No marketing BS",
+                ].map((item) => (
+                  <div
+                    key={item}
+                    className="flex items-center gap-2 text-xs font-bold sm:text-sm"
+                  >
+                    <CheckCircle2
+                      className="h-4 w-4 shrink-0"
+                      style={{
+                        color: COLORS.clay,
+                      }}
+                    />
+
+                    {item}
+                  </div>
+                ))}
+              </div>
             </div>
 
-            {/* Headline */}
-            <h1 className="mb-5 text-4xl font-extrabold leading-[1.1] tracking-tight text-white sm:text-5xl lg:text-6xl">
-              Roofing Leads That{" "}
-              <span className="text-[#FF6B35]">Actually Convert</span>
-            </h1>
+            {/* RIGHT WORKFLOW */}
 
-            <p className="mx-auto mb-8 max-w-xl text-base leading-relaxed text-zinc-400 sm:text-lg">
-              AI automation built for California roofers. Capture, qualify & close — while you're on the ladder.
+            <div className="relative mx-auto w-full max-w-xl lg:max-w-none">
+              <div
+                className="absolute left-1/2 top-1/2 h-[420px] w-[420px] -translate-x-1/2 -translate-y-1/2 rounded-full opacity-40 blur-3xl"
+                style={{
+                  backgroundColor: "rgba(201,181,156,.20)",
+                }}
+              />
+
+              <div className="relative py-4 sm:py-6">
+                <div
+                  className="absolute left-[27px] top-[48px] bottom-[48px] w-px"
+                  style={{
+                    backgroundColor: "rgba(23,22,21,.18)",
+                  }}
+                />
+
+                {/* STEP 1 */}
+
+                <div className="relative mb-5 flex items-center gap-3 sm:mb-6">
+                  <div
+                    className="relative z-10 flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl border"
+                    style={{
+                      backgroundColor: COLORS.ivory,
+                      borderColor: "rgba(23,22,21,.10)",
+                    }}
+                  >
+                    <Mail
+                      className="h-5 w-5"
+                      style={{ color: COLORS.black }}
+                    />
+                  </div>
+
+                  <div
+                    className="flex min-h-[70px] flex-1 items-center rounded-2xl border px-4 py-3 shadow-md"
+                    style={{
+                      backgroundColor: "rgba(255,255,255,.88)",
+                      borderColor: "rgba(23,22,21,.10)",
+                    }}
+                  >
+                    <div>
+                      <div className="text-sm font-black">
+                        Contact submits form
+                      </div>
+
+                      <div
+                        className="mt-1 text-xs"
+                        style={{
+                          color: "rgba(23,22,21,.55)",
+                        }}
+                      >
+                        New contractor lead
+                      </div>
+                    </div>
+
+                    <ArrowRight
+                      className="ml-auto h-4 w-4 shrink-0"
+                      style={{ color: COLORS.clay }}
+                    />
+                  </div>
+                </div>
+
+                {/* STEP 2 */}
+
+                <div className="relative mb-5 flex items-center gap-3 sm:mb-6">
+                  <div
+                    className="relative z-10 flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl border"
+                    style={{
+                      backgroundColor: COLORS.ivory,
+                      borderColor: "rgba(23,22,21,.10)",
+                    }}
+                  >
+                    <Tag
+                      className="h-5 w-5"
+                      style={{ color: COLORS.clay }}
+                    />
+                  </div>
+
+                  <div
+                    className="flex min-h-[70px] flex-1 items-center rounded-2xl border px-4 py-3 shadow-md"
+                    style={{
+                      backgroundColor: "rgba(255,255,255,.88)",
+                      borderColor: "rgba(23,22,21,.10)",
+                    }}
+                  >
+                    <div>
+                      <div className="text-sm font-black">
+                        Add lead status
+                      </div>
+
+                      <div
+                        className="mt-1 text-xs"
+                        style={{
+                          color: "rgba(23,22,21,.55)",
+                        }}
+                      >
+                        Automatically organize the lead
+                      </div>
+                    </div>
+
+                    <div
+                      className="ml-auto rounded-full px-2.5 py-1 text-[9px] font-black uppercase tracking-wide"
+                      style={{
+                        backgroundColor: "rgba(201,181,156,.25)",
+                        color: COLORS.black,
+                      }}
+                    >
+                      New Lead
+                    </div>
+                  </div>
+                </div>
+
+                {/* CUSTOMER CARD */}
+
+                <div
+                  className="relative z-20 mb-5 overflow-hidden rounded-2xl border shadow-xl sm:mb-6"
+                  style={{
+                    backgroundColor: COLORS.black,
+                    borderColor: "rgba(23,22,21,.12)",
+                  }}
+                >
+                  <div
+                    className="h-1 w-full"
+                    style={{
+                      backgroundColor: COLORS.clay,
+                    }}
+                  />
+
+                  <div className="p-5">
+                    <div className="flex items-center gap-3">
+                      <div
+                        className="flex h-14 w-14 shrink-0 items-center justify-center rounded-full text-sm font-black"
+                        style={{
+                          backgroundColor: COLORS.clay,
+                          color: COLORS.black,
+                        }}
+                      >
+                        AC
+                      </div>
+
+                      <div className="min-w-0">
+                        <div
+                          className="truncate text-lg font-black"
+                          style={{
+                            color: COLORS.ivory,
+                          }}
+                        >
+                          Alex Contractor
+                        </div>
+
+                        <div
+                          className="mt-1 text-xs"
+                          style={{
+                            color: "rgba(249,248,246,.55)",
+                          }}
+                        >
+                          New website inquiry
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="mt-4 flex flex-wrap items-center gap-2">
+                      <span
+                        className="rounded-full px-2.5 py-1 text-[9px] font-black uppercase tracking-wide"
+                        style={{
+                          backgroundColor: COLORS.clay,
+                          color: COLORS.black,
+                        }}
+                      >
+                        Potential Client
+                      </span>
+
+                      <span
+                        className="rounded-full px-2.5 py-1 text-[9px] font-black uppercase tracking-wide"
+                        style={{
+                          backgroundColor: "rgba(249,248,246,.12)",
+                          color: "rgba(249,248,246,.75)",
+                        }}
+                      >
+                        Website Lead
+                      </span>
+
+                      <span
+                        className="rounded-full px-2.5 py-1 text-[9px] font-black uppercase tracking-wide"
+                        style={{
+                          backgroundColor: "rgba(249,248,246,.12)",
+                          color: "rgba(249,248,246,.75)",
+                        }}
+                      >
+                        Follow Up
+                      </span>
+                    </div>
+
+                    <div
+                      className="mt-4 flex items-center justify-between border-t pt-3"
+                      style={{
+                        borderColor: "rgba(249,248,246,.12)",
+                      }}
+                    >
+                      <div className="flex items-center gap-2">
+                        <span
+                          className="h-2 w-2 rounded-full"
+                          style={{
+                            backgroundColor: COLORS.clay,
+                          }}
+                        />
+
+                        <span
+                          className="text-xs font-bold"
+                          style={{
+                            color: "rgba(249,248,246,.68)",
+                          }}
+                        >
+                          Automation active
+                        </span>
+                      </div>
+
+                      <ArrowUpRight
+                        className="h-4 w-4"
+                        style={{ color: COLORS.clay }}
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                {/* STEP 3 */}
+
+                <div className="relative mb-5 flex items-center gap-3 sm:mb-6">
+                  <div
+                    className="relative z-10 flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl border"
+                    style={{
+                      backgroundColor: COLORS.ivory,
+                      borderColor: "rgba(23,22,21,.10)",
+                    }}
+                  >
+                    <Phone
+                      className="h-5 w-5"
+                      style={{ color: COLORS.clay }}
+                    />
+                  </div>
+
+                  <div
+                    className="flex min-h-[70px] flex-1 items-center rounded-2xl border px-4 py-3 shadow-md"
+                    style={{
+                      backgroundColor: "rgba(255,255,255,.88)",
+                      borderColor: "rgba(23,22,21,.10)",
+                    }}
+                  >
+                    <div>
+                      <div className="text-sm font-black">
+                        Send follow-up
+                      </div>
+
+                      <div
+                        className="mt-1 text-xs"
+                        style={{
+                          color: "rgba(23,22,21,.55)",
+                        }}
+                      >
+                        Automatically follow up with the lead
+                      </div>
+                    </div>
+
+                    <ArrowRight
+                      className="ml-auto h-4 w-4 shrink-0"
+                      style={{ color: COLORS.clay }}
+                    />
+                  </div>
+                </div>
+
+                {/* STEP 4 */}
+
+                <div className="relative flex items-center gap-3">
+                  <div
+                    className="relative z-10 flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl border"
+                    style={{
+                      backgroundColor: COLORS.ivory,
+                      borderColor: "rgba(23,22,21,.10)",
+                    }}
+                  >
+                    <CheckCircle2
+                      className="h-5 w-5"
+                      style={{ color: COLORS.clay }}
+                    />
+                  </div>
+
+                  <div
+                    className="flex min-h-[70px] flex-1 items-center rounded-2xl border px-4 py-3 shadow-md"
+                    style={{
+                      backgroundColor: "rgba(255,255,255,.88)",
+                      borderColor: "rgba(23,22,21,.10)",
+                    }}
+                  >
+                    <div>
+                      <div className="text-sm font-black">
+                        Booked & ready
+                      </div>
+
+                      <div
+                        className="mt-1 text-xs"
+                        style={{
+                          color: "rgba(23,22,21,.55)",
+                        }}
+                      >
+                        Turn inquiries into real opportunities
+                      </div>
+                    </div>
+
+                    <div
+                      className="ml-auto rounded-full px-2.5 py-1 text-[9px] font-black uppercase tracking-wide"
+                      style={{
+                        backgroundColor: COLORS.black,
+                        color: COLORS.ivory,
+                      }}
+                    >
+                      Done
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* CUSTOMER REVIEWS */}
+
+      <section
+        className="overflow-hidden border-y py-14 sm:py-16"
+        style={{
+          backgroundColor: COLORS.sand,
+          borderColor: "rgba(23,22,21,.08)",
+        }}
+      >
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div className="max-w-2xl">
+            <span
+              className="text-xs font-black uppercase tracking-[.18em]"
+              style={{ color: COLORS.clay }}
+            >
+              Customer Reviews
+            </span>
+
+            <h2 className="mt-2 text-3xl font-black tracking-tight sm:text-4xl">
+              What customers say about us
+            </h2>
+
+            <p
+              className="mt-3 text-sm sm:text-base"
+              style={{
+                color: "rgba(23,22,21,.55)",
+              }}
+            >
+              We do our best to provide you with the best experience ever.
             </p>
+          </div>
 
-            {/* CTAs */}
-            <div className="mb-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
-              <a
-                href="#get-started"
-                className="flex items-center justify-center gap-2 rounded-full bg-[#FF6B35] px-7 py-3.5 text-sm font-bold text-[#0B0F19] transition-all hover:scale-105 hover:bg-[#F7931E] w-full sm:w-auto"
-              >
-                Start Free Trial
-                <span>→</span>
-              </a>
-              <a
-                href="/demo"
-                className="flex items-center justify-center gap-2 rounded-full border border-white/20 px-7 py-3.5 text-sm font-semibold text-white transition-all hover:bg-white/5 w-full sm:w-auto"
-              >
-                ▶ Watch Demo
-              </a>
+          <div
+            className="relative mt-8 overflow-hidden"
+            onMouseEnter={() => setIsReviewsPaused(true)}
+            onMouseLeave={() => setIsReviewsPaused(false)}
+          >
+            <div
+              className="pointer-events-none absolute left-0 top-0 z-10 h-full w-8"
+              style={{
+                background:
+                  "linear-gradient(to right, rgba(239,233,227,1), rgba(239,233,227,0))",
+              }}
+            />
+
+            <div
+              className="pointer-events-none absolute right-0 top-0 z-10 h-full w-8"
+              style={{
+                background:
+                  "linear-gradient(to left, rgba(239,233,227,1), rgba(239,233,227,0))",
+              }}
+            />
+
+            <div
+              className={`review-marquee flex w-max gap-4 ${
+                isReviewsPaused ? "paused" : ""
+              }`}
+            >
+              {/* SET 1 */}
+
+              <div className="flex gap-4">
+                <RatingCard />
+
+                {marqueeReviews.map((review) => (
+                  <ReviewCard
+                    key={review.name}
+                    title={review.title}
+                    text={review.text}
+                    name={review.name}
+                  />
+                ))}
+              </div>
+
+              {/* SET 2 */}
+
+              <div className="flex gap-4">
+                <RatingCard />
+
+                {marqueeReviews.map((review) => (
+                  <ReviewCard
+                    key={`duplicate-${review.name}`}
+                    title={review.title}
+                    text={review.text}
+                    name={review.name}
+                  />
+                ))}
+              </div>
             </div>
+          </div>
 
-            {/* Trust Bar */}
-            <div className="flex flex-wrap items-center justify-center gap-3 text-xs text-zinc-500 sm:gap-6">
-              {trustItems.map((item) => (
-                <div key={item} className="flex items-center gap-1.5">
-                  <span className="text-emerald-400">✓</span>
-                  <span>{item}</span>
+          {/* COMPANY LOGOS */}
+
+          <div
+            className="mt-10 overflow-hidden border-t pt-8"
+            style={{
+              borderColor: "rgba(23,22,21,.10)",
+            }}
+          >
+            <div className="logo-marquee flex w-max items-center gap-14">
+              {[
+                "CONTRACTOR",
+                "BUILDR",
+                "NORTHSTAR",
+                "SUMMIT",
+                "PROBUILD",
+                "CRAFTWORK",
+                "CONTRACTOR",
+                "BUILDR",
+                "NORTHSTAR",
+                "SUMMIT",
+                "PROBUILD",
+                "CRAFTWORK",
+              ].map((logo, index) => (
+                <div
+                  key={`${logo}-${index}`}
+                  className="shrink-0 text-sm font-black tracking-tight opacity-45 sm:text-lg"
+                >
+                  {logo}
                 </div>
               ))}
             </div>
           </div>
-        </section>
+        </div>
+      </section>
 
-        {/* ═══════════════════════════════════════
-            STATS
-            ═══════════════════════════════════════ */}
-        <section className="w-full border-y border-zinc-900 bg-white/[0.01] px-6 py-1">
-          
-        </section>
+      {/* REQUEST */}
 
-        {/* ═══════════════════════════════════════
-            FEATURES
-            ═══════════════════════════════════════ */}
-            {/* ═══════════════════════════════════════
-    FEATURES — BENTO GRID
-    ═══════════════════════════════════════ */}
-<section className="w-full px-6 py-16 lg:py-24">
-  <div className="mx-auto max-w-6xl">
-    {/* Section Header */}
-    <div className="mb-12 text-center">
-      <p className="text-sm font-semibold text-[#FF6B35]">Features</p>
-      <h2 className="mt-2 text-3xl font-extrabold tracking-tight text-white sm:text-4xl">
-        Everything we handle for you
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      {/* SERVICES */}
+
+      
+
+
+
+
+
+
+
+
+
+
+
+      {/* PROCESS */}
+{/* =====================================================
+    PROCESS
+====================================================== */}
+
+<section
+  id="process"
+  className="relative overflow-hidden py-16 sm:py-20 lg:py-24"
+  style={{
+    backgroundColor: COLORS.black,
+    color: COLORS.ivory,
+  }}
+>
+  {/* Background decoration */}
+  <div
+    className="pointer-events-none absolute -left-32 top-1/2 h-80 w-80 -translate-y-1/2 rounded-full blur-3xl"
+    style={{
+      backgroundColor: "rgba(201,181,156,.12)",
+    }}
+  />
+
+  <div
+    className="pointer-events-none absolute -right-32 top-0 h-96 w-96 rounded-full blur-3xl"
+    style={{
+      backgroundColor: "rgba(201,181,156,.08)",
+    }}
+  />
+
+  <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+    
+    {/* HEADER */}
+    <div className="max-w-2xl">
+      <div className="flex items-center gap-3">
+        <span
+          className="h-px w-8"
+          style={{
+            backgroundColor: COLORS.clay,
+          }}
+        />
+
+        <span
+          className="text-xs font-black uppercase tracking-[.18em]"
+          style={{
+            color: COLORS.clay,
+          }}
+        >
+          How it works
+        </span>
+      </div>
+
+      <h2 className="mt-4 text-3xl font-black leading-[1.02] tracking-tight sm:text-4xl lg:text-5xl">
+        Simple from
+        <span
+          className="block"
+          style={{
+            color: COLORS.clay,
+          }}
+        >
+          start to finish.
+        </span>
       </h2>
-      <p className="mx-auto mt-3 max-w-lg text-sm text-zinc-400">
-        One platform. Zero manual work. Built exclusively for roofing contractors.
+
+      <p
+        className="mt-4 max-w-xl text-sm leading-relaxed sm:text-base"
+        style={{
+          color: "rgba(249,248,246,.58)",
+        }}
+      >
+        You shouldn't need a project manager just to get your yard
+        looking right. We keep everything clear, straightforward and
+        easy to follow.
       </p>
     </div>
 
-    {/* Bento Grid — 4 cols × 3 rows, perfect fit */}
-    <div className="grid grid-cols-1 gap-4 auto-rows-[220px] sm:grid-cols-2 lg:grid-cols-4">
+    {/* PROCESS CARDS */}
+    <div className="relative mt-10 lg:mt-14">
+      
+      {/* Connecting line — desktop */}
+      <div
+        className="absolute left-[16.66%] right-[16.66%] top-14 hidden h-px lg:block"
+        style={{
+          background:
+            "linear-gradient(90deg, transparent, rgba(201,181,156,.45), rgba(201,181,156,.45), transparent)",
+        }}
+      />
 
-      {/* ── Card 1: 5-Star Review Funnel (2×2) ── */}
-      <div className="group relative col-span-1 row-span-1 flex flex-col justify-between overflow-hidden rounded-[32px] bg-[#131316] p-7 transition-all duration-300 hover:bg-[#16161a] sm:col-span-2 sm:row-span-2">
-        <div>
-          <div className="mb-5 flex items-center gap-3">
-            <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-amber-500/10 text-amber-400">
-              <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M11.48 3.499a.562.562 0 011.04 0l2.125 5.111a.563.563 0 00.475.345l5.518.442c.499.04.701.663.321.988l-4.204 3.602a.563.563 0 00-.182.557l1.285 5.385a.562.562 0 01-.84.61l-4.725-2.885a.563.563 0 00-.586 0L6.982 20.54a.562.562 0 01-.84-.61l1.285-5.386a.562.562 0 00-.182-.557l-4.204-3.602a.563.563 0 01.321-.988l5.518-.442a.563.563 0 00.475-.345L11.48 3.5z" />
-              </svg>
+      <div className="grid gap-4 md:grid-cols-3">
+        {process.map(([number, title, text], index) => (
+          <div
+            key={number}
+            className="group relative overflow-hidden rounded-3xl border p-6 transition-all duration-500 hover:-translate-y-2 hover:shadow-2xl sm:p-7"
+            style={{
+              backgroundColor:
+                index === 1
+                  ? "rgba(201,181,156,.12)"
+                  : "rgba(249,248,246,.055)",
+              borderColor: "rgba(249,248,246,.10)",
+            }}
+          >
+            {/* Card glow */}
+            <div
+              className="pointer-events-none absolute -right-16 -top-16 h-40 w-40 rounded-full opacity-0 blur-3xl transition-opacity duration-500 group-hover:opacity-100"
+              style={{
+                backgroundColor: "rgba(201,181,156,.20)",
+              }}
+            />
+
+            {/* Number + connector */}
+            <div className="relative flex items-center justify-between">
+              <div
+                className="flex h-14 w-14 items-center justify-center rounded-full border text-sm font-black transition-all duration-500 group-hover:scale-110"
+                style={{
+                  backgroundColor:
+                    index === 1
+                      ? COLORS.clay
+                      : "rgba(201,181,156,.10)",
+                  borderColor: "rgba(201,181,156,.35)",
+                  color:
+                    index === 1
+                      ? COLORS.black
+                      : COLORS.clay,
+                }}
+              >
+                {number}
+              </div>
+
+              <span
+                className="text-[10px] font-black uppercase tracking-[.16em]"
+                style={{
+                  color: "rgba(249,248,246,.30)",
+                }}
+              >
+                Step {index + 1}
+              </span>
             </div>
-            <span className="rounded-full bg-emerald-500/10 px-3 py-1 text-xs font-semibold text-emerald-400">
-              Fully Automated
-            </span>
-          </div>
-          <h3 className="text-xl font-bold text-white">5-Star Magic Review Funnel</h3>
-          <p className="mt-2 max-w-sm text-sm leading-relaxed text-zinc-400">
-            Automatically requests reviews at peak satisfaction. Negative feedback is intercepted privately before it hits public platforms.
-          </p>
-        </div>
 
-        {/* Inner stat card — matches your screenshot style */}
-        <div className="mt-6 rounded-2xl bg-white/[0.03] p-5">
-          <p className="text-xs text-zinc-500">Average rating generated</p>
-          <div className="mt-2 flex items-center gap-4">
-            <span className="text-4xl font-bold tracking-tight text-white">4.9</span>
-            <div className="flex gap-0.5 text-lg text-amber-400">★★★★★</div>
-          </div>
-        </div>
-      </div>
+            {/* Content */}
+            <div className="relative mt-8">
+              <h3 className="text-xl font-black tracking-tight sm:text-2xl">
+                {title}
+              </h3>
 
-      {/* ── Card 2: Functional Website (1×1) ── */}
-      <div className="group relative col-span-1 row-span-1 flex flex-col justify-between overflow-hidden rounded-[32px] bg-[#131316] p-6 transition-all duration-300 hover:bg-[#16161a]">
-        <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-blue-500/10 text-blue-400">
-          <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-            <path strokeLinecap="round" strokeLinejoin="round" d="M12 21a9.004 9.004 0 008.716-6.747M12 21a9.004 9.004 0 01-8.716-6.747M12 21c2.485 0 4.5-4.03 4.5-9S14.485 3 12 3m0 18c-2.485 0-4.5-4.03-4.5-9S9.515 3 12 3m0 0a8.997 8.997 0 017.843 4.582M12 3a8.997 8.997 0 00-7.843 4.582m15.686 0A11.953 11.953 0 0112 10.5c-2.998 0-5.74-1.1-7.843-2.918m15.686 0A8.959 8.959 0 0121 12c0 .778-.099 1.533-.284 2.253m0 0A17.919 17.919 0 0112 16.5c-3.162 0-6.133-.815-8.716-2.247m0 0A9.015 9.015 0 013 12c0-1.605.42-3.113 1.157-4.418" />
-          </svg>
-        </div>
-        <div>
-          <h3 className="text-sm font-bold text-white">Functional Website</h3>
-          <p className="mt-1 text-xs leading-relaxed text-zinc-400">
-            High-converting roofing sites with instant quote forms and live chat.
-          </p>
-        </div>
-      </div>
-
-      {/* ── Card 3: Storm Damage Alerts (1×1) ── */}
-      <div className="group relative col-span-1 row-span-1 flex flex-col justify-between overflow-hidden rounded-[32px] bg-[#131316] p-6 transition-all duration-300 hover:bg-[#16161a]">
-        <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-rose-500/10 text-rose-400">
-          <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-            <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z" />
-          </svg>
-        </div>
-        <div>
-          <h3 className="text-sm font-bold text-white">Storm Damage Alerts</h3>
-          <p className="mt-1 text-xs leading-relaxed text-zinc-400">
-            Real-time hail & wind alerts so you reach homeowners before competitors.
-          </p>
-        </div>
-      </div>
-
-      {/* ── Card 4: Wildfire Zone Targeting (1×1) ── */}
-     {/* ── Card 4: Wildfire Zone Targeting (1×1) with Modern Fire Scene ── */}
-<div className="group relative col-span-1 row-span-1 flex flex-col justify-between overflow-hidden rounded-[32px] bg-[#131316] p-6 transition-all duration-300 hover:bg-[#16161a]">
-  
-  {/* Modern Fire Scene — thin strip at bottom */}
-  <div className="pointer-events-none absolute bottom-0 left-0 right-0 h-14 overflow-hidden opacity-60 transition-opacity duration-500 group-hover:opacity-100">
-    
-    {/* Ground line */}
-    <div className="absolute bottom-0 left-0 right-0 h-1 bg-zinc-800" />
-    
-    {/* Silhouettes: Trees + House */}
-    <div className="absolute bottom-1 left-2 flex items-end gap-2 opacity-40">
-      {/* Tree 1 */}
-      <div className="flex flex-col items-center">
-        <div className="w-4 h-4 rounded-full bg-zinc-700" />
-        <div className="w-0.5 h-3 bg-zinc-700 -mt-1" />
-      </div>
-      {/* House */}
-      <div className="relative flex flex-col items-center mx-1">
-        <div className="w-0 h-0 border-l-[8px] border-r-[8px] border-b-[7px] border-l-transparent border-r-transparent border-b-zinc-700" />
-        <div className="w-4 h-3.5 bg-zinc-700" />
-        {/* Glowing window */}
-        <div className="absolute top-2 left-1 w-1 h-1 bg-amber-500 rounded-[1px] animate-window-glow" />
-      </div>
-      {/* Tree 2 */}
-      <div className="flex flex-col items-center">
-        <div className="w-5 h-5 rounded-full bg-zinc-700" />
-        <div className="w-0.5 h-4 bg-zinc-700 -mt-1" />
-      </div>
-{/* Tree 3 */}
-      <div className="flex flex-col items-center">
-        <div className="w-5 h-5 rounded-full bg-zinc-700" />
-        <div className="w-0.5 h-4 bg-zinc-700 -mt-1" />
-      </div>
-{/* House 2 */}
-      <div className="relative flex flex-col items-center mx-1">
-        <div className="w-0 h-0 border-l-[8px] border-r-[8px] border-b-[7px] border-l-transparent border-r-transparent border-b-zinc-700" />
-        <div className="w-4 h-3.5 bg-zinc-700" />
-        {/* Glowing window */}
-        <div className="absolute top-2 left-1 w-1 h-1 bg-amber-500 rounded-[1px] animate-window-glow" />
-        <div className="absolute top-2 left-1 w-1 h-1 bg-amber-500 rounded-[2px] animate-window-glow" />
-      </div>
-
-    </div>
-    
-    
-    {/* Animated Flames */}
-    
-    
-    {/* Warm ambient glow */}
-    <div className="absolute bottom-0 left-1/2 h-8 w-24 -translate-x-1/2 rounded-full bg-orange-500/10 blur-xl" />
-  </div>
-
-  <div className="relative z-10 flex h-10 w-10 items-center justify-center rounded-2xl bg-orange-500/10 text-orange-400">
-    <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-      <path strokeLinecap="round" strokeLinejoin="round" d="M15.362 5.214A8.252 8.252 0 0112 21 8.25 8.25 0 016.038 7.048 8.287 8.287 0 009 9.6a8.983 8.983 0 013.361-6.867 8.21 8.21 0 003 2.48z" />
-      <path strokeLinecap="round" strokeLinejoin="round" d="M12 18a3.75 3.75 0 00.495-7.467 5.99 5.99 0 00-1.925 3.546 5.974 5.974 0 01-2.133-1.001A3.75 3.75 0 0012 18z" />
-    </svg>
-  </div>
-  <div className="relative z-10">
-    <h3 className="text-sm font-bold text-white">Wildfire Zone Targeting</h3>
-    <p className="mt-1 text-xs leading-relaxed text-zinc-400">
-      Geo-fenced campaigns that activate automatically in fire-affected ZIP codes.
-    </p>
-  </div>
-</div>
-
-      {/* ── Card 5: Missed Call Text Back (1×1) ── */}
-      <div className="group relative col-span-1 row-span-1 flex flex-col justify-between overflow-hidden rounded-[32px] bg-[#131316] p-6 transition-all duration-300 hover:bg-[#16161a]">
-        <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-purple-500/10 text-purple-400">
-          <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-            <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 6.75c0 8.284 6.716 15 15 15h2.25a2.25 2.25 0 002.25-2.25v-1.372c0-.516-.351-.966-.852-1.091l-4.423-1.106c-.44-.11-.902.055-1.173.417l-.97 1.293c-.282.376-.769.542-1.21.38a12.035 12.035 0 01-7.143-7.143c-.162-.441.004-.928.38-1.21l1.293-.97c.363-.271.527-.734.417-1.173L6.963 3.102a1.125 1.125 0 00-1.091-.852H4.5A2.25 2.25 0 002.25 4.5v2.25z" />
-          </svg>
-        </div>
-        <div>
-          <h3 className="text-sm font-bold text-white">Missed Call Text Back</h3>
-          <p className="mt-1 text-xs leading-relaxed text-zinc-400">
-            Every missed call triggers an instant SMS with your booking calendar link.
-          </p>
-        </div>
-      </div>
-
-      {/* ── Card 6: AI Lead Command Center (4×1) ── */}
-      <div className="group relative col-span-1 row-span-1 flex flex-col justify-between overflow-hidden rounded-[32px] bg-[#131316] p-7 transition-all duration-300 hover:bg-[#16161a] sm:col-span-2 lg:col-span-4">
-        <div className="flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between">
-          <div className="flex items-start gap-5 sm:items-center">
-            <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-[#FF6B35]/10 text-[#FF6B35]">
-              <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z" />
-              </svg>
-            </div>
-            <div>
-              <h3 className="text-lg font-bold text-white">AI Lead Command Center</h3>
-              <p className="mt-1 max-w-md text-sm text-zinc-400">
-                One dashboard. Every lead source, conversation, and appointment — automatically organized and scored by AI.
+              <p
+                className="mt-3 text-sm leading-relaxed"
+                style={{
+                  color: "rgba(249,248,246,.55)",
+                }}
+              >
+                {text}
               </p>
             </div>
-          </div>
 
-          {/* Inner stat cards */}
-          <div className="flex gap-3">
-            <div className="rounded-2xl bg-white/[0.03] px-5 py-3 text-center">
-              <div className="text-xl font-bold text-white">&lt;2 min</div>
-              <div className="mt-0.5 text-[10px] font-medium text-zinc-500">Response Time</div>
+            {/* Bottom accent */}
+            <div className="relative mt-8 flex items-center gap-2">
+              <div
+                className="h-1 rounded-full transition-all duration-500 group-hover:w-16"
+                style={{
+                  width: index === 1 ? "64px" : "32px",
+                  backgroundColor: COLORS.clay,
+                }}
+              />
+
+              <div
+                className="h-1 w-1 rounded-full"
+                style={{
+                  backgroundColor: COLORS.clay,
+                }}
+              />
             </div>
-            <div className="rounded-2xl bg-white/[0.03] px-5 py-3 text-center">
-              <div className="text-xl font-bold text-white">48%</div>
-              <div className="mt-0.5 text-[10px] font-medium text-zinc-500">Conversion Lift</div>
-            </div>
-            <div className="hidden rounded-2xl bg-white/[0.03] px-5 py-3 text-center sm:block">
-              <div className="text-xl font-bold text-white">2,400+</div>
-              <div className="mt-0.5 text-[10px] font-medium text-zinc-500">Roofers Active</div>
-            </div>
           </div>
-        </div>
-      </div>
-
-    </div>
-  </div>
-</section>
- {/* ═══════════════════════════════════════
-            STATS
-            ═══════════════════════════════════════ */}
-        <section className="w-full border-y border-zinc-900 bg-white/[0.01] px-6 py-1">
-          
-        </section>
-       
-        {/* ═══════════════════════════════════════
-            HOW IT WORKS
-            ═══════════════════════════════════════ */}
-       {/* ═══════════════════════════════════════
-    HOW IT WORKS — Modern Vertical Timeline
-    ═══════════════════════════════════════ */}
-<section id="how-it-works" className="w-full px-6 py-16 lg:py-24">
-  <div className="mx-auto max-w-3xl">
-    {/* Section Header */}
-    <div className="mb-16 text-center">
-      <p className="text-sm font-semibold text-[#FF6B35]">How It Works</p>
-      <h2 className="mt-2 text-3xl font-extrabold tracking-tight text-white sm:text-4xl">
-        Three steps to more roofing jobs
-      </h2>
-    </div>
-
-    {/* Timeline */}
-    <div className="relative space-y-10 sm:space-y-14">
-      {/* Vertical connector line */}
-      <div className="absolute left-8 top-10 bottom-10 hidden w-px bg-gradient-to-b from-[#FF6B35] via-[#FF6B35]/40 to-transparent sm:block" />
-
-      {/* ── Step 1 ── */}
-      <div className="group relative flex items-start gap-6 sm:gap-8">
-        <div className="relative z-10 flex-shrink-0">
-          <div className="flex h-16 w-16 items-center justify-center rounded-2xl border border-zinc-800 bg-[#131316] text-2xl font-black text-[#FF6B35] transition-colors group-hover:border-[#FF6B35]/40">
-            01
-          </div>
-        </div>
-        <div className="flex-1 pt-1">
-          <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:gap-3">
-            <h3 className="text-lg font-bold text-white sm:text-xl">Book a Demo Call</h3>
-            <span className="w-fit rounded-full bg-[#FF6B35]/10 px-2.5 py-0.5 text-[11px] font-bold uppercase tracking-wider text-[#FF6B35]">
-              20 minutes
-            </span>
-          </div>
-          <p className="mt-2 text-sm leading-relaxed text-zinc-400 sm:text-base">
-            We'll show you exactly how the system works using real data from roofers in your area. No pressure, no slides — just a straightforward screen share where you can ask anything.
-          </p>
-        </div>
-      </div>
-
-      {/* ── Step 2 ── */}
-      <div className="group relative flex items-start gap-6 sm:gap-8">
-        <div className="relative z-10 flex-shrink-0">
-          <div className="flex h-16 w-16 items-center justify-center rounded-2xl border border-zinc-800 bg-[#131316] text-2xl font-black text-[#FF6B35] transition-colors group-hover:border-[#FF6B35]/40">
-            02
-          </div>
-        </div>
-        <div className="flex-1 pt-1">
-          <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:gap-3">
-            <h3 className="text-lg font-bold text-white sm:text-xl">We Build Everything</h3>
-            <span className="w-fit rounded-full bg-[#FF6B35]/10 px-2.5 py-0.5 text-[11px] font-bold uppercase tracking-wider text-[#FF6B35]">
-              7–10 days
-            </span>
-          </div>
-          <p className="mt-2 text-sm leading-relaxed text-zinc-400 sm:text-base">
-            You fill out one onboarding form. We handle the rest — your website, automation, lead sources, review funnels, and wildfire targeting. You don't lift a finger while we work behind the scenes.
-          </p>
-        </div>
-      </div>
-
-      {/* ── Step 3 ── */}
-      <div className="group relative flex items-start gap-6 sm:gap-8">
-        <div className="relative z-10 flex-shrink-0">
-          <div className="flex h-16 w-16 items-center justify-center rounded-2xl border border-zinc-800 bg-[#131316] text-2xl font-black text-[#FF6B35] transition-colors group-hover:border-[#FF6B35]/40">
-            03
-          </div>
-        </div>
-        <div className="flex-1 pt-1">
-          <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:gap-3">
-            <h3 className="text-lg font-bold text-white sm:text-xl">Go Live & Get Leads</h3>
-            <span className="w-fit rounded-full bg-[#FF6B35]/10 px-2.5 py-0.5 text-[11px] font-bold uppercase tracking-wider text-[#FF6B35]">
-              25 minutes
-            </span>
-          </div>
-          <p className="mt-2 text-sm leading-relaxed text-zinc-400 sm:text-base">
-            One quick call to walk through your dashboard. We show you where the leads come in and how to respond. Then you start booking inspections the same week.
-          </p>
-        </div>
+        ))}
       </div>
     </div>
-  </div>
-</section>
- {/* ═══════════════════════════════════════
-            STATS
-            ═══════════════════════════════════════ */}
-        <section className="w-full border-y border-zinc-900 bg-white/[0.01] px-6 py-1">
-          
-        </section>
-{/* ═══════════════════════════════════════
-    WHO WE HELP — Minimal Grid
-    ═══════════════════════════════════════ */}
-<section className="w-full px-6 py-16 lg:py-24">
-  <div className="mx-auto max-w-5xl">
-    {/* Section Header */}
-    <div className="mb-12 text-center">
-      <p className="text-sm font-semibold text-[#FF6B35]">Who We Help</p>
-      <h2 className="mt-2 text-3xl font-extrabold tracking-tight text-white sm:text-4xl">
-        Built for contractors
-      </h2>
-    </div>
 
-    {/* Grid */}
-    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-      
-      {/* ── Roofers — Active ── */}
-      <div className="group relative aspect-[3/4] overflow-hidden rounded-[24px] border border-zinc-800 bg-[#131316] transition-all duration-300 hover:border-zinc-700">
-        <img
-          src="/image/roof.png"
-          alt="Roofers"
-          className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
-          loading="lazy"
-        />
-        <div className="absolute inset-0 bg-gradient-to-t from-[#0B0F19] via-[#0B0F19]/40 to-transparent" />
-        <div className="absolute bottom-0 left-0 right-0 p-5">
-          <span className="rounded-full bg-[#FF6B35] px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-[#0B0F19]">
-            Live
-          </span>
-          <h3 className="mt-2 text-lg font-bold text-white">Roofers</h3>
-        </div>
-      </div>
-
-      {/* ── Solar — Active ── */}
-      <div className="group relative aspect-[3/4] overflow-hidden rounded-[24px] border border-zinc-800 bg-[#131316] transition-all duration-300 hover:border-zinc-700">
-        <img
-          src="/image/solar.png"
-          alt="Solar"
-          className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
-          loading="lazy"
-        />
-        <div className="absolute inset-0 bg-gradient-to-t from-[#0B0F19] via-[#0B0F19]/40 to-transparent" />
-        <div className="absolute bottom-0 left-0 right-0 p-5">
-          <span className="rounded-full bg-amber-500 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-[#0B0F19]">
-            Live
-          </span>
-          <h3 className="mt-2 text-lg font-bold text-white">Solar</h3>
-        </div>
-      </div>
-
-      {/* ── HVAC — Coming Soon ── */}
-      <div className="relative aspect-[3/4] overflow-hidden rounded-[24px] border border-zinc-800 bg-[#131316]">
-        <div className="absolute inset-0 bg-zinc-900" />
-        <div className="absolute inset-0 flex flex-col items-center justify-center gap-3">
-          <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-zinc-800 text-zinc-600">
-            <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M15.362 5.214A8.252 8.252 0 0112 21 8.25 8.25 0 016.038 7.048 8.287 8.287 0 009 9.6a8.983 8.983 0 013.361-6.867 8.21 8.21 0 003 2.48z" />
-            </svg>
-          </div>
-          <span className="rounded-full border border-zinc-700 bg-zinc-800/50 px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-zinc-500">
-            Coming Soon
-          </span>
-          <h3 className="text-lg font-bold text-zinc-500">HVAC</h3>
-        </div>
-      </div>
-
-      {/* ── Landscaping — Coming Soon ── */}
-      <div className="relative aspect-[3/4] overflow-hidden rounded-[24px] border border-zinc-800 bg-[#131316]">
-        <div className="absolute inset-0 bg-zinc-900" />
-        <div className="absolute inset-0 flex flex-col items-center justify-center gap-3">
-          <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-zinc-800 text-zinc-600">
-            <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 15a4.5 4.5 0 004.5 4.5H18a3.75 3.75 0 001.332-7.257 3 3 0 00-3.758-3.848 5.25 5.25 0 00-10.233 2.33A4.502 4.502 0 002.25 15z" />
-            </svg>
-          </div>
-          <span className="rounded-full border border-zinc-700 bg-zinc-800/50 px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-zinc-500">
-            Coming Soon
-          </span>
-          <h3 className="text-lg font-bold text-zinc-500">Landscaping</h3>
-        </div>
-      </div>
-
-    </div>
-  </div>
-</section>
-
-
-
- {/* ═══════════════════════════════════════
-            STATS
-            ═══════════════════════════════════════ */}
-        <section className="w-full border-y border-zinc-900 bg-white/[0.01] px-6 py-1">
-          
-        </section>
-
-
-
-
-
-
-
-
-
-
-
- {/* ═══════════════════════════════════════
-    IN THE PRESS — Magazine Grid
-    ═══════════════════════════════════════ */}
-<section className="w-full px-6 py-16 lg:py-24">
-  <div className="mx-auto max-w-5xl">
-    {/* Centered Header */}
-    <div className="text-center">
-      <p className="text-sm font-semibold uppercase tracking-widest text-[#FF6B35]">In The News</p>
-      <h2 className="mt-2 text-3xl font-extrabold tracking-tight text-white sm:text-4xl lg:text-5xl">
-        StackBoardAI in the Press
-      </h2>
-      <p className="mx-auto mt-3 max-w-lg text-sm text-zinc-400">
-        Featured in leading publications across the contracting and tech industry.
-      </p>
-      <a
-        href="#"
-        className="mt-6 inline-flex items-center gap-2 rounded-full border border-zinc-700 px-6 py-2.5 text-sm font-semibold text-white transition-all hover:border-[#FF6B35] hover:text-[#FF6B35]"
-      >
-        View All Press
-      </a>
-    </div>
-
-    {/* Publication Badges */}
-    <div className="mb-12 mt-10 flex flex-wrap items-center justify-center gap-3">
-      {["Authority Magazine", "Innovation Strategy", "Contractor Weekly", "Forbes", "TechCrunch"].map((pub) => (
-        <span
-          key={pub}
-          className="rounded-full border border-zinc-800 bg-[#131316] px-4 py-2 text-xs font-medium text-zinc-500 transition-colors hover:border-zinc-700 hover:text-zinc-300"
-        >
-          {pub}
-        </span>
-      ))}
-    </div>
-
-    {/* Articles — Vertical Cards */}
-    <div className="grid grid-cols-1 gap-5 lg:grid-cols-2">
-      {press.map((item, i) => (
+    {/* BOTTOM MESSAGE */}
+    <div
+      className="mt-8 flex flex-col gap-4 rounded-2xl border p-5 sm:flex-row sm:items-center sm:justify-between sm:p-6"
+      style={{
+        backgroundColor: "rgba(249,248,246,.045)",
+        borderColor: "rgba(249,248,246,.09)",
+      }}
+    >
+      <div className="flex items-start gap-3">
         <div
-          key={i}
-          className="group overflow-hidden rounded-[28px] border border-zinc-800 bg-[#131316] transition-all duration-300 hover:border-zinc-700 hover:shadow-[0_0_40px_-15px_rgba(255,107,53,0.1)]"
+          className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full"
+          style={{
+            backgroundColor: "rgba(201,181,156,.15)",
+            color: COLORS.clay,
+          }}
         >
-          {/* Image */}
-          <div className="relative aspect-[16/9] overflow-hidden">
-            <img
-              src={item.image}
-              alt={item.title}
-              className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
-              loading="lazy"
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-[#131316] via-transparent to-transparent opacity-50" />
-            <span className="absolute left-5 top-5 rounded-full bg-[#FF6B35] px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-[#0B0F19]">
-              {item.tag}
-            </span>
-          </div>
-
-          {/* Content */}
-          <div className="p-6 sm:p-8">
-            <div className="flex items-center gap-3 text-xs text-zinc-500">
-              <span>{item.date}</span>
-              <span className="h-1 w-1 rounded-full bg-zinc-700" />
-              <span className="italic">By {item.author}</span>
-            </div>
-            <h3 className="mt-3 text-xl font-bold text-white sm:text-2xl">
-              {item.title}
-            </h3>
-            <p className="mt-2 text-sm leading-relaxed text-zinc-400">
-              {item.excerpt}
-            </p>
-            <div className="mt-6 flex items-center justify-between border-t border-zinc-800 pt-4">
-              <span className="text-xs font-medium text-zinc-500">📰 {item.publication}</span>
-              <a
-                href="#"
-                className="flex items-center gap-1 text-sm font-semibold text-[#FF6B35] transition-colors hover:text-[#F7931E]"
-              >
-                Read Article <span>→</span>
-              </a>
-            </div>
-          </div>
+          <Check className="h-4 w-4" />
         </div>
-      ))}
+
+        <div>
+          <p className="text-sm font-black">
+            No complicated process.
+          </p>
+
+          <p
+            className="mt-1 text-xs"
+            style={{
+              color: "rgba(249,248,246,.45)",
+            }}
+          >
+            Tell us what you want. We'll help figure out the rest.
+          </p>
+        </div>
+      </div>
+
+      <button
+        type="button"
+        onClick={() => scrollToRequest()}
+        className="group flex w-full items-center justify-center gap-2 rounded-full px-5 py-3 text-xs font-black uppercase tracking-wide transition-all duration-300 hover:-translate-y-0.5 hover:opacity-90 sm:w-auto"
+        style={{
+          backgroundColor: COLORS.clay,
+          color: COLORS.black,
+        }}
+      >
+        Start Your Project
+
+        <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+      </button>
     </div>
   </div>
 </section>
 
+      {/* WORK */}
 
- {/* ═══════════════════════════════════════
-            STATS
-            ═══════════════════════════════════════ */}
-        <section className="w-full border-y border-zinc-900 bg-white/[0.01] px-6 py-1">
-          
-        </section>
+      <section
+        id="work"
+        className="py-12 sm:py-16 lg:py-20"
+        style={{ backgroundColor: COLORS.ivory }}
+      >
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div className="flex flex-col justify-between gap-5 sm:flex-row sm:items-end">
+            <div className="max-w-2xl">
+              <span
+                className="text-xs font-black uppercase tracking-[.18em]"
+                style={{ color: COLORS.clay }}
+              >
+                Selected work
+              </span>
 
+              <h2 className="mt-2 text-3xl font-black tracking-tight sm:text-4xl">
+                Real yards.
+                <span
+                  className="block"
+                  style={{ color: COLORS.clay }}
+                >
+                  Thoughtfully finished.
+                </span>
+              </h2>
 
-{/* ═══════════════════════════════════════
-    TESTIMONIALS — Card Within Cards (Bento)
-    ═══════════════════════════════════════ */}
-<section className="w-full px-6 py-16 lg:py-24">
-  <div className="mx-auto max-w-6xl">
-    {/* Section Header */}
-    <div className="mb-12 text-center">
-      <p className="text-sm font-semibold text-[#FF6B35]">Testimonials</p>
-      <h2 className="mt-2 text-3xl font-extrabold tracking-tight text-white sm:text-4xl">
-        Trusted by roofers across California
-      </h2>
-    </div>
+              <p className="mt-3 max-w-xl text-sm leading-relaxed opacity-60">
+                A look at the kind of outdoor spaces our team creates
+                for local homeowners.
+              </p>
+            </div>
 
-    {/* ── OUTER CARD ── */}
-    <div className="rounded-[32px] border border-zinc-800 bg-[#131316] p-5 sm:p-7">
-      <div className="grid grid-cols-1 gap-4 md:grid-cols-4 md:auto-rows-[minmax(200px,auto)]">
-        
-        {/* ══ Marcus — Big Featured (2×2) ══ */}
-        <div className="group relative flex flex-col justify-between overflow-hidden rounded-2xl border border-zinc-800 bg-[#0B0F19] p-6 transition-all duration-300 hover:border-zinc-700 md:col-span-2 md:row-span-2">
-          <div>
-            <div className="mb-3 text-3xl text-[#FF6B35]/30">❝</div>
-            <blockquote className="text-base font-medium leading-relaxed text-zinc-200 sm:text-lg">
-              "We went from chasing leads to having a full calendar. In the first month after wildfire season, StackBoardAI helped us book <span className="text-white">47 inspections in Sonoma County</span> alone. The automation literally pays for itself by day 12."
-            </blockquote>
+            <button
+              type="button"
+              onClick={() => scrollToRequest()}
+              className="flex w-fit items-center gap-2 rounded-full border px-5 py-3 text-sm font-black"
+              style={{
+                borderColor: "rgba(23,22,21,.15)",
+              }}
+            >
+              Start your project
+              <ArrowRight className="h-4 w-4" />
+            </button>
           </div>
-          
-          <div className="mt-6">
-            <div className="flex items-center gap-3">
+
+          <div className="mt-8 grid auto-rows-[210px] grid-cols-1 gap-3 sm:auto-rows-[230px] md:auto-rows-[180px] md:grid-cols-4 lg:auto-rows-[210px]">
+
+            {/* FEATURED */}
+
+            <div className="group relative overflow-hidden rounded-2xl sm:row-span-2 md:col-span-2 md:row-span-2">
               <img
-                src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop&crop=face"
-                alt="Marcus Chen"
-                className="h-12 w-12 rounded-full object-cover ring-2 ring-zinc-800"
+                src={images.project1}
+                alt="Finished residential backyard landscape"
+                className="absolute inset-0 h-full w-full object-cover transition duration-700 group-hover:scale-105"
                 loading="lazy"
               />
-              <div className="flex-1">
-                <div className="flex items-center gap-2">
-                  <span className="text-sm font-bold text-white">Marcus Chen</span>
-                  <span className="rounded bg-emerald-500/10 px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wider text-emerald-400">Verified</span>
+
+              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/10 to-transparent" />
+
+              <div className="absolute bottom-0 left-0 right-0 p-5 text-white sm:p-6">
+                <span className="text-[9px] font-black uppercase tracking-[.18em] opacity-75">
+                  Featured project
+                </span>
+
+                <h3 className="mt-2 max-w-md text-xl font-black leading-tight sm:text-2xl">
+                  A backyard made for actually living in
+                </h3>
+
+                <p className="mt-2 max-w-md text-xs leading-relaxed text-white/70 sm:text-sm">
+                  Design, planting and outdoor living improvements
+                  built around how the family uses the space.
+                </p>
+              </div>
+            </div>
+
+            {[
+              [
+                images.project2,
+                "Front Yard",
+                "Simple planting. Big curb appeal.",
+                "Residential front-yard planting",
+              ],
+              [
+                images.project3,
+                "Landscape Refresh",
+                "Less maintenance. More enjoyment.",
+                "Residential landscape refresh",
+              ],
+              [
+                images.project5,
+                "Planting",
+                "Natural texture, year-round interest.",
+                "Residential planting project",
+              ],
+              [
+                images.project6,
+                "Maintenance",
+                "A yard that's easier to keep beautiful.",
+                "Landscape maintenance project",
+              ],
+            ].map(([image, label, title, alt]) => (
+              <div
+                key={title}
+                className="group relative overflow-hidden rounded-2xl md:col-span-1"
+              >
+                <img
+                  src={image}
+                  alt={alt}
+                  className="absolute inset-0 h-full w-full object-cover transition duration-700 group-hover:scale-105"
+                  loading="lazy"
+                />
+
+                <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-transparent to-transparent" />
+
+                <div className="absolute bottom-0 left-0 p-4 text-white">
+                  <span className="text-[9px] font-black uppercase tracking-[.18em] opacity-70">
+                    {label}
+                  </span>
+
+                  <h3 className="mt-1 text-base font-black leading-tight">
+                    {title}
+                  </h3>
                 </div>
-                <div className="text-xs text-zinc-500">Golden State Roofing · Sonoma, CA</div>
               </div>
-            </div>
-            <div className="mt-2 flex items-center gap-1 text-amber-400 text-sm">
-              ★★★★★ <span className="text-xs text-zinc-500">4.9</span>
+            ))}
+
+            <div className="group relative overflow-hidden rounded-2xl md:col-span-2">
+              <img
+                src={images.project4}
+                alt="Completed backyard landscaping project"
+                className="absolute inset-0 h-full w-full object-cover transition duration-700 group-hover:scale-105"
+                loading="lazy"
+              />
+
+              <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/20 to-transparent" />
+
+              <div className="absolute bottom-0 left-0 p-5 text-white">
+                <span className="text-[9px] font-black uppercase tracking-[.18em] opacity-70">
+                  Backyard transformation
+                </span>
+
+                <h3 className="mt-1 max-w-sm text-lg font-black">
+                  A space that finally feels finished.
+                </h3>
+              </div>
             </div>
           </div>
         </div>
+      </section>
 
-        {/* ══ David — Top Right (2×1) ══ */}
-        <div className="group flex flex-col justify-between overflow-hidden rounded-2xl border border-zinc-800 bg-[#0B0F19] p-5 transition-all duration-300 hover:border-zinc-700 md:col-span-2">
-          <div>
-            <div className="mb-2 text-2xl text-[#FF6B35]/30">❝</div>
-            <blockquote className="text-sm leading-relaxed text-zinc-300">
-              "The storm alert feature is insane. We got notified of hail damage in Orange County before the news even reported it. <span className="font-medium text-white">Closed 8 jobs in 72 hours</span> from that one alert."
-            </blockquote>
-          </div>
-          <div className="mt-4 flex items-center gap-3">
-            <img
-              src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&h=100&fit=crop&crop=face"
-              alt="David Torres"
-              className="h-9 w-9 rounded-full object-cover ring-2 ring-zinc-800"
-              loading="lazy"
-            />
-            <div className="flex-1">
-              <div className="flex items-center gap-2">
-                <span className="text-sm font-bold text-white">David Torres</span>
-                <span className="rounded bg-emerald-500/10 px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wider text-emerald-400">Verified</span>
-              </div>
-              <div className="text-xs text-zinc-500">Premier Roof Solutions · Orange County, CA</div>
-            </div>
-            <div className="text-amber-400 text-xs">★★★★★</div>
-          </div>
+      {/* TEAM */}
+
+     {/* =====================================================
+    TEAM
+====================================================== */}
+
+<section
+  id="team"
+  className="relative overflow-hidden py-16 sm:py-20 lg:py-24"
+  style={{
+    backgroundColor: COLORS.black,
+    color: COLORS.ivory,
+  }}
+>
+  {/* Background glow */}
+  <div
+    className="pointer-events-none absolute -right-40 top-20 h-96 w-96 rounded-full blur-3xl"
+    style={{
+      backgroundColor: "rgba(201,181,156,.10)",
+    }}
+  />
+
+  <div
+    className="pointer-events-none absolute -left-40 bottom-0 h-80 w-80 rounded-full blur-3xl"
+    style={{
+      backgroundColor: "rgba(201,181,156,.07)",
+    }}
+  />
+
+  <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+
+    {/* HEADER */}
+    <div className="grid items-end gap-8 lg:grid-cols-[.9fr_1.1fr]">
+
+      <div>
+        <div className="flex items-center gap-3">
+          <span
+            className="h-px w-8"
+            style={{
+              backgroundColor: COLORS.clay,
+            }}
+          />
+
+          <span
+            className="text-xs font-black uppercase tracking-[.18em]"
+            style={{
+              color: COLORS.clay,
+            }}
+          >
+            Meet the people
+          </span>
         </div>
 
-        {/* ══ Sarah — Middle Right (2×1) ══ */}
-        <div className="group flex flex-col justify-between overflow-hidden rounded-2xl border border-zinc-800 bg-[#0B0F19] p-5 transition-all duration-300 hover:border-zinc-700 md:col-span-2">
-          <div>
-            <div className="mb-2 text-2xl text-[#FF6B35]/30">❝</div>
-            <blockquote className="text-sm leading-relaxed text-zinc-300">
-              "I was skeptical about the review funnel. But we went from 12 Google reviews to <span className="font-medium text-white">87 in six weeks</span>. Our average rating went from 3.8 to 4.9."
-            </blockquote>
-          </div>
-          <div className="mt-4 flex items-center gap-3">
-            <img
-              src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=100&h=100&fit=crop&crop=face"
-              alt="Sarah Lopez"
-              className="h-9 w-9 rounded-full object-cover ring-2 ring-zinc-800"
-              loading="lazy"
-            />
-            <div className="flex-1">
-              <div className="flex items-center gap-2">
-                <span className="text-sm font-bold text-white">Sarah Lopez</span>
-                <span className="rounded bg-emerald-500/10 px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wider text-emerald-400">Verified</span>
-              </div>
-              <div className="text-xs text-zinc-500">Lopez Family Roofing · San Diego, CA</div>
-            </div>
-            <div className="text-amber-400 text-xs">★★★★★</div>
-          </div>
-        </div>
-
-        {/* ══ James — Bottom Left (2×1) ══ */}
-        <div className="group flex flex-col justify-between overflow-hidden rounded-2xl border border-zinc-800 bg-[#0B0F19] p-5 transition-all duration-300 hover:border-zinc-700 md:col-span-2">
-          <div>
-            <div className="mb-2 text-2xl text-[#FF6B35]/30">❝</div>
-            <blockquote className="text-sm leading-relaxed text-zinc-300">
-              "We do both roofing and solar. StackBoardAI consolidated everything into one dashboard. <span className="font-medium text-white">$340K in new revenue in Q2</span> directly attributed to the system."
-            </blockquote>
-          </div>
-          <div className="mt-4 flex items-center gap-3">
-            <img
-              src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&h=100&fit=crop&crop=face"
-              alt="James Wright"
-              className="h-9 w-9 rounded-full object-cover ring-2 ring-zinc-800"
-              loading="lazy"
-            />
-            <div className="flex-1">
-              <div className="flex items-center gap-2">
-                <span className="text-sm font-bold text-white">James Wright</span>
-                <span className="rounded bg-emerald-500/10 px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wider text-emerald-400">Verified</span>
-              </div>
-              <div className="text-xs text-zinc-500">Wright Roofing & Solar · Bay Area, CA</div>
-            </div>
-            <div className="text-amber-400 text-xs">★★★★★ <span className="text-zinc-500">5.0</span></div>
-          </div>
-        </div>
-
-        {/* ══ Ryan — Bottom Right (2×1) ══ */}
-        <div className="group flex flex-col justify-between overflow-hidden rounded-2xl border border-zinc-800 bg-[#0B0F19] p-5 transition-all duration-300 hover:border-zinc-700 md:col-span-2">
-          <div>
-            <div className="mb-2 text-2xl text-[#FF6B35]/30">❝</div>
-            <blockquote className="text-sm leading-relaxed text-zinc-300">
-              "Missed Call Text Back saved us. I used to lose 4-5 leads a day because I was on a roof. Now every missed call gets an instant text. <span className="font-medium text-white">60% of those people book</span> through the link."
-            </blockquote>
-          </div>
-          <div className="mt-4 flex items-center gap-3">
-            <img
-              src="https://images.unsplash.com/photo-1560250097-0b93528c311a?w=100&h=100&fit=crop&crop=face"
-              alt="Ryan Kim"
-              className="h-9 w-9 rounded-full object-cover ring-2 ring-zinc-800"
-              loading="lazy"
-            />
-            <div className="flex-1">
-              <div className="flex items-center gap-2">
-                <span className="text-sm font-bold text-white">Ryan Kim</span>
-                <span className="rounded bg-emerald-500/10 px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wider text-emerald-400">Verified</span>
-              </div>
-              <div className="text-xs text-zinc-500">Kim Roofing Co. · Sacramento, CA</div>
-            </div>
-            <div className="text-amber-400 text-xs">★★★★★</div>
-          </div>
-        </div>
-
+        <h2 className="mt-4 text-3xl font-black leading-[1.02] tracking-tight sm:text-4xl lg:text-5xl">
+          The people behind
+          <span
+            className="block"
+            style={{
+              color: COLORS.clay,
+            }}
+          >
+            the work.
+          </span>
+        </h2>
       </div>
+
+      <div className="max-w-xl lg:justify-self-end">
+        <p
+          className="text-sm leading-relaxed sm:text-base"
+          style={{
+            color: "rgba(249,248,246,.55)",
+          }}
+        >
+          Landscaping is personal. You're trusting a team to work
+          around your home, your family and your property. Meet the
+          people responsible for making every project happen.
+        </p>
+
+        <div className="mt-5 flex flex-wrap gap-3">
+          <div
+            className="rounded-full border px-3 py-1.5 text-[10px] font-black uppercase tracking-wider"
+            style={{
+              borderColor: "rgba(249,248,246,.12)",
+              backgroundColor: "rgba(249,248,246,.04)",
+              color: "rgba(249,248,246,.65)",
+            }}
+          >
+            Local Team
+          </div>
+
+          <div
+            className="rounded-full border px-3 py-1.5 text-[10px] font-black uppercase tracking-wider"
+            style={{
+              borderColor: "rgba(249,248,246,.12)",
+              backgroundColor: "rgba(249,248,246,.04)",
+              color: "rgba(249,248,246,.65)",
+            }}
+          >
+            Experienced
+          </div>
+
+          <div
+            className="rounded-full border px-3 py-1.5 text-[10px] font-black uppercase tracking-wider"
+            style={{
+              borderColor: "rgba(249,248,246,.12)",
+              backgroundColor: "rgba(249,248,246,.04)",
+              color: "rgba(249,248,246,.65)",
+            }}
+          >
+            Hands On
+          </div>
+        </div>
+      </div>
+    </div>
+
+    {/* TEAM CARDS */}
+    <div className="mt-10 grid gap-4 md:grid-cols-3 lg:mt-14">
+      {[
+        [
+          images.team1,
+          "Alex Morgan",
+          "Owner & Landscape Designer",
+          "01",
+        ],
+        [
+          images.team2,
+          "Maya Chen",
+          "Landscape Project Lead",
+          "02",
+        ],
+        [
+          images.team3,
+          "Ryan Brooks",
+          "Crew Lead",
+          "03",
+        ],
+      ].map(([image, name, role, number], index) => (
+        <div
+          key={name}
+          className="group relative overflow-hidden rounded-3xl border transition-all duration-500 hover:-translate-y-2 hover:shadow-2xl"
+          style={{
+            backgroundColor:
+              index === 1
+                ? "rgba(201,181,156,.10)"
+                : "rgba(249,248,246,.055)",
+            borderColor: "rgba(249,248,246,.10)",
+          }}
+        >
+          {/* Card glow */}
+          <div
+            className="pointer-events-none absolute -right-20 -top-20 z-10 h-48 w-48 rounded-full opacity-0 blur-3xl transition-opacity duration-500 group-hover:opacity-100"
+            style={{
+              backgroundColor: "rgba(201,181,156,.18)",
+            }}
+          />
+
+          {/* IMAGE */}
+          <div className="relative aspect-[4/4.5] overflow-hidden">
+            <img
+              src={image}
+              alt={name}
+              className="h-full w-full object-cover grayscale-[15%] transition duration-700 group-hover:scale-105 group-hover:grayscale-0"
+              loading="lazy"
+            />
+
+            {/* Image gradient */}
+            <div
+              className="absolute inset-0"
+              style={{
+                background:
+                  "linear-gradient(to top, rgba(23,22,21,.85), rgba(23,22,21,.05) 55%, transparent)",
+              }}
+            />
+
+            {/* Number */}
+            <div
+              className="absolute left-5 top-5 flex h-10 w-10 items-center justify-center rounded-full border text-[10px] font-black backdrop-blur-md"
+              style={{
+                backgroundColor: "rgba(23,22,21,.55)",
+                borderColor: "rgba(249,248,246,.18)",
+                color: COLORS.clay,
+              }}
+            >
+              {number}
+            </div>
+
+            {/* Role on image */}
+            <div className="absolute bottom-5 left-5 right-5">
+              <div
+                className="text-[9px] font-black uppercase tracking-[.16em]"
+                style={{
+                  color: COLORS.clay,
+                }}
+              >
+                {role}
+              </div>
+
+              <h3 className="mt-1 text-xl font-black text-white sm:text-2xl">
+                {name}
+              </h3>
+            </div>
+          </div>
+
+          {/* CARD FOOTER */}
+          <div className="relative p-5">
+            <div className="flex items-center justify-between gap-4">
+              <div>
+                <p
+                  className="text-xs leading-relaxed"
+                  style={{
+                    color: "rgba(249,248,246,.48)",
+                  }}
+                >
+                  Here from the first walkthrough to the final
+                  detail.
+                </p>
+              </div>
+
+              <div
+                className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border transition-all duration-300 group-hover:rotate-45"
+                style={{
+                  borderColor: "rgba(201,181,156,.30)",
+                  color: COLORS.clay,
+                }}
+              >
+                <ArrowUpRight className="h-4 w-4" />
+              </div>
+            </div>
+
+            {/* Bottom accent */}
+            <div className="mt-5 flex items-center gap-2">
+              <div
+                className="h-1 rounded-full transition-all duration-500 group-hover:w-16"
+                style={{
+                  width: index === 1 ? "48px" : "28px",
+                  backgroundColor: COLORS.clay,
+                }}
+              />
+
+              <div
+                className="h-1 w-1 rounded-full"
+                style={{
+                  backgroundColor: COLORS.clay,
+                }}
+              />
+            </div>
+          </div>
+        </div>
+      ))}
+    </div>
+
+    {/* BOTTOM TRUST BAR */}
+    <div
+      className="mt-8 flex flex-col gap-4 rounded-2xl border p-5 sm:flex-row sm:items-center sm:justify-between sm:p-6"
+      style={{
+        backgroundColor: "rgba(249,248,246,.045)",
+        borderColor: "rgba(249,248,246,.09)",
+      }}
+    >
+      <div className="flex items-center gap-3">
+        <div
+          className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full"
+          style={{
+            backgroundColor: "rgba(201,181,156,.14)",
+            color: COLORS.clay,
+          }}
+        >
+          <CheckCircle2 className="h-5 w-5" />
+        </div>
+
+        <div>
+          <p className="text-sm font-black">
+            You're working with real people.
+          </p>
+
+          <p
+            className="mt-1 text-xs"
+            style={{
+              color: "rgba(249,248,246,.45)",
+            }}
+          >
+            No call centers. No disappearing after the sale.
+          </p>
+        </div>
+      </div>
+
+      <button
+        type="button"
+        onClick={() => scrollToRequest()}
+        className="group flex w-full items-center justify-center gap-2 rounded-full px-5 py-3 text-xs font-black uppercase tracking-wide transition-all duration-300 hover:-translate-y-0.5 hover:opacity-90 sm:w-auto"
+        style={{
+          backgroundColor: COLORS.clay,
+          color: COLORS.black,
+        }}
+      >
+        Talk To Our Team
+
+        <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+      </button>
     </div>
   </div>
 </section>
 
- {/* ═══════════════════════════════════════
-            STATS
-            ═══════════════════════════════════════ */}
-        <section className="w-full border-y border-zinc-900 bg-white/[0.01] px-6 py-1">
-          
-        </section>
+      {/* GOOGLE REVIEWS */}
 
-{/* ═══════════════════════════════════════
-    FAQ — Split Panel Style
-    ═══════════════════════════════════════ */}
-<section className="w-full px-6 py-16 lg:py-24">
-  <div className="mx-auto max-w-5xl">
-    {/* Section Header */}
-    <div className="mb-12 text-center">
-      <p className="text-sm font-semibold text-[#FF6B35]">FAQ</p>
-      <h2 className="mt-2 text-3xl font-extrabold tracking-tight text-white sm:text-4xl">
-        Questions? Answered.
-      </h2>
+      <section
+  id="pricing"
+  className="relative overflow-hidden py-12 sm:py-16 lg:py-20"
+  style={{
+    backgroundColor: COLORS.sand,
+  }}
+>
+  {/* Subtle decorative shape */}
+  <div
+    className="pointer-events-none absolute -right-32 -top-32 h-72 w-72 rounded-full blur-3xl"
+    style={{
+      backgroundColor: "rgba(196,132,91,.10)",
+    }}
+  />
+
+  <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+
+    {/* Header */}
+    <div className="flex flex-col justify-between gap-6 md:flex-row md:items-end">
+      <div>
+        <span
+          className="text-[10px] font-black uppercase tracking-[.18em]"
+          style={{ color: COLORS.clay }}
+        >
+          Simple pricing
+        </span>
+
+        <h2 className="mt-2 text-3xl font-black tracking-tight sm:text-4xl">
+          Good work.
+          <span
+            className="block"
+            style={{ color: COLORS.clay }}
+          >
+            Straightforward pricing.
+          </span>
+        </h2>
+      </div>
+
+      <p className="max-w-xl text-sm leading-relaxed opacity-55 md:text-right">
+        Choose the level of care that works for your property.
+        Every plan is built around reliable service and quality work.
+      </p>
     </div>
 
-    {/* Outer Card */}
-    <div className="overflow-hidden rounded-[32px] border border-zinc-800 bg-[#131316]">
-      <div className="grid grid-cols-1 lg:grid-cols-5">
-        
-        {/* Left: Question List */}
-        <div className="divide-y divide-zinc-800 lg:col-span-2 lg:divide-y-0 lg:divide-x-0">
+    {/* Pricing */}
+    <div className="mt-8 grid gap-4 lg:grid-cols-3">
+
+      {/* Essential */}
+      <div
+        className="group flex flex-col rounded-3xl border p-6 transition duration-300 hover:-translate-y-1 hover:shadow-xl sm:p-7"
+        style={{
+          backgroundColor: COLORS.ivory,
+          borderColor: "rgba(23,22,21,.08)",
+        }}
+      >
+        <span
+          className="text-[10px] font-black uppercase tracking-[.18em]"
+          style={{ color: COLORS.clay }}
+        >
+          Essential
+        </span>
+
+        <div className="mt-5 flex items-end gap-1">
+          <span className="text-4xl font-black tracking-tight">
+            $149
+          </span>
+
+          <span className="mb-1 text-xs opacity-40">
+            / month
+          </span>
+        </div>
+
+        <p className="mt-4 text-xs leading-relaxed opacity-55 sm:text-sm">
+          Reliable ongoing care for homeowners who want their
+          outdoor space looking its best.
+        </p>
+
+        <div
+          className="my-6 h-px"
+          style={{
+            backgroundColor: "rgba(23,22,21,.08)",
+          }}
+        />
+
+        <div className="flex-1 space-y-3">
           {[
-            { num: "01", q: "When will I start seeing results?" },
-            { num: "02", q: "Why is pricing so affordable?" },
-            { num: "03", q: "What if I want to cancel?" },
-            { num: "04", q: "Will my site rank on Google?" },
-            { num: "05", q: "Why not just rely on word of mouth?" },
-          ].map((item, i) => {
-            const isActive = openFaq === i;
-            return (
-              <button
-                key={i}
-                onClick={() => setOpenFaq(i)}
-                className={`flex w-full items-start gap-4 p-5 text-left transition-all duration-300 sm:p-6 lg:border-r lg:border-zinc-800 ${
-                  isActive
-                    ? "bg-[#FF6B35]/5"
-                    : "hover:bg-white/[0.02]"
-                }`}
+            "Lawn maintenance",
+            "Seasonal cleanup",
+            "Basic trimming",
+            "Routine property care",
+          ].map((feature) => (
+            <div
+              key={feature}
+              className="flex items-center gap-3 text-xs"
+            >
+              <span
+                className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full text-[10px] font-black"
+                style={{
+                  backgroundColor: "rgba(196,132,91,.14)",
+                  color: COLORS.clay,
+                }}
               >
-                <span
-                  className={`mt-0.5 text-xs font-black sm:text-sm ${
-                    isActive ? "text-[#FF6B35]" : "text-zinc-600"
-                  }`}
-                >
-                  {item.num}
-                </span>
-                <span
-                  className={`text-sm font-semibold leading-snug ${
-                    isActive ? "text-white" : "text-zinc-400"
-                  }`}
-                >
-                  {item.q}
-                </span>
-                {isActive && (
-                  <div className="ml-auto hidden h-2 w-2 rounded-full bg-[#FF6B35] lg:block" />
-                )}
-              </button>
-            );
-          })}
+                ✓
+              </span>
+
+              <span className="opacity-65">
+                {feature}
+              </span>
+            </div>
+          ))}
         </div>
 
-        {/* Right: Answer Display */}
-        <div className="relative flex items-center lg:col-span-3">
-          {/* Active indicator line (mobile) */}
-          <div className="absolute left-0 top-0 h-1 w-full bg-gradient-to-r from-[#FF6B35] to-transparent lg:hidden" />
-          
-          <div className="p-6 sm:p-10">
-            <div className="mb-6 flex h-12 w-12 items-center justify-center rounded-2xl bg-[#FF6B35]/10 text-[#FF6B35]">
-              <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M9.879 7.519c1.171-1.025 3.071-1.025 4.242 0 1.172 1.025 1.172 2.687 0 3.712-.203.179-.43.326-.67.442-.745.361-1.45.999-1.45 1.827v.75M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9 5.25h.008v.008H12v-.008z" />
-              </svg>
-            </div>
+        <a
+          href="#contact"
+          className="mt-8 flex items-center justify-center gap-2 rounded-full px-5 py-3 text-[10px] font-black uppercase tracking-wide transition hover:opacity-80"
+          style={{
+            backgroundColor: COLORS.black,
+            color: COLORS.ivory,
+          }}
+        >
+          Get Started
 
-            <h3 className="text-lg font-bold text-white sm:text-xl">
-              {[
-                "When am I going to start seeing results?",
-                "Why is your pricing so affordable compared to agencies?",
-                "What happens if I decide to cancel my membership?",
-                "Can people find my website on Google?",
-                "Why should I spend on a website when word of mouth already works?",
-              ][openFaq ?? 0]}
-            </h3>
+          <ArrowRight className="h-4 w-4" />
+        </a>
+      </div>
 
-            <p className="mt-4 text-sm leading-relaxed text-zinc-400 sm:text-base">
-              {[
-                "Most contractors see their first qualified leads within 7–10 days of going live. Your website is built and ads are launched during that window, so the pipeline starts filling immediately.",
-                "We built proprietary AI automation that handles 90% of the work agencies charge thousands for. No bloated account teams. Just smart software and dedicated support.",
-                "You own your website and data. Cancel anytime with zero penalties. We'll even help you export everything. No contracts, no drama.",
-                "Absolutely. Every site we build is optimized for local SEO — fast loading, mobile-first, schema markup, and location pages for every city you serve.",
-                "Word of mouth is great, but it's not predictable. Our system captures the 80% of homeowners who search online first, then automates the follow-up so no lead slips through.",
-              ][openFaq ?? 0]}
-            </p>
-
-            <div className="mt-8 flex items-center gap-3 rounded-xl border border-zinc-800 bg-[#0B0F19] p-4">
-              <div className="flex h-8 w-8 items-center justify-center rounded-full bg-emerald-500/10">
-                <svg className="h-4 w-4 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-                </svg>
-              </div>
-              <p className="text-xs text-zinc-400 sm:text-sm">
-                Still unsure? <a href="#get-started" className="font-semibold text-[#FF6B35] hover:text-[#F7931E]">Book a 20-min demo</a> and we'll show you live results.
-              </p>
-            </div>
-          </div>
+      {/* Popular */}
+      <div
+        className="relative flex flex-col overflow-hidden rounded-3xl border p-6 shadow-lg transition duration-300 hover:-translate-y-1 sm:p-7"
+        style={{
+          backgroundColor: COLORS.black,
+          color: COLORS.ivory,
+          borderColor: COLORS.clay,
+        }}
+      >
+        {/* Popular badge */}
+        <div
+          className="absolute right-5 top-5 rounded-full px-3 py-1 text-[9px] font-black uppercase tracking-wider"
+          style={{
+            backgroundColor: COLORS.clay,
+            color: COLORS.black,
+          }}
+        >
+          Most Popular
         </div>
 
+        <span
+          className="text-[10px] font-black uppercase tracking-[.18em]"
+          style={{ color: COLORS.clay }}
+        >
+          Signature
+        </span>
+
+        <div className="mt-5 flex items-end gap-1">
+          <span className="text-4xl font-black tracking-tight">
+            $299
+          </span>
+
+          <span className="mb-1 text-xs opacity-40">
+            / month
+          </span>
+        </div>
+
+        <p className="mt-4 text-xs leading-relaxed opacity-55 sm:text-sm">
+          Complete landscape care for homeowners who want
+          everything handled without the hassle.
+        </p>
+
+        <div
+          className="my-6 h-px"
+          style={{
+            backgroundColor: "rgba(249,248,246,.10)",
+          }}
+        />
+
+        <div className="flex-1 space-y-3">
+          {[
+            "Everything in Essential",
+            "Landscape maintenance",
+            "Garden & bed care",
+            "Detailed property cleanup",
+            "Priority scheduling",
+          ].map((feature) => (
+            <div
+              key={feature}
+              className="flex items-center gap-3 text-xs"
+            >
+              <span
+                className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full text-[10px] font-black"
+                style={{
+                  backgroundColor: "rgba(196,132,91,.20)",
+                  color: COLORS.clay,
+                }}
+              >
+                ✓
+              </span>
+
+              <span className="opacity-70">
+                {feature}
+              </span>
+            </div>
+          ))}
+        </div>
+
+        <a
+          href="#contact"
+          className="mt-8 flex items-center justify-center gap-2 rounded-full px-5 py-3 text-[10px] font-black uppercase tracking-wide transition hover:opacity-90"
+          style={{
+            backgroundColor: COLORS.clay,
+            color: COLORS.black,
+          }}
+        >
+          Get Started
+
+          <ArrowRight className="h-4 w-4" />
+        </a>
       </div>
-{/* Support CTA Card */}
-<div className="mt-8 overflow-hidden rounded-[28px] border border-zinc-800 bg-[#131316] p-1">
-  <div className="flex flex-col items-center justify-between gap-5 rounded-[24px] bg-gradient-to-br from-[#FF6B35]/[0.07] via-transparent to-transparent px-6 py-8 sm:flex-row sm:px-10 sm:py-9">
-    <div className="flex items-start gap-4 sm:items-center">
-      <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-[#FF6B35]/10 text-[#FF6B35]">
-        <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-          <path strokeLinecap="round" strokeLinejoin="round" d="M8.625 12a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H8.25m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H12m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0h-.375M21 12c0 4.556-4.03 8.25-9 8.25a9.764 9.764 0 01-2.555-.337A5.972 5.972 0 015.41 20.97a5.969 5.969 0 01-.474-.065 4.48 4.48 0 00.978-2.025c.09-.457-.133-.901-.467-1.226C3.93 16.178 3 14.189 3 12c0-4.556 4.03-8.25 9-8.25s9 3.694 9 8.25z" />
-        </svg>
+
+      {/* Custom */}
+      <div
+        className="group flex flex-col rounded-3xl border p-6 transition duration-300 hover:-translate-y-1 hover:shadow-xl sm:p-7"
+        style={{
+          backgroundColor: COLORS.ivory,
+          borderColor: "rgba(23,22,21,.08)",
+        }}
+      >
+        <span
+          className="text-[10px] font-black uppercase tracking-[.18em]"
+          style={{ color: COLORS.clay }}
+        >
+          Custom
+        </span>
+
+        <div className="mt-5">
+          <span className="text-4xl font-black tracking-tight">
+            Let's talk
+          </span>
+        </div>
+
+        <p className="mt-4 text-xs leading-relaxed opacity-55 sm:text-sm">
+          For larger properties, unique landscapes, or projects
+          that need a more tailored approach.
+        </p>
+
+        <div
+          className="my-6 h-px"
+          style={{
+            backgroundColor: "rgba(23,22,21,.08)",
+          }}
+        />
+
+        <div className="flex-1 space-y-3">
+          {[
+            "Custom landscape plan",
+            "Property assessment",
+            "Dedicated project planning",
+            "Flexible scope",
+            "Personalized service",
+          ].map((feature) => (
+            <div
+              key={feature}
+              className="flex items-center gap-3 text-xs"
+            >
+              <span
+                className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full text-[10px] font-black"
+                style={{
+                  backgroundColor: "rgba(196,132,91,.14)",
+                  color: COLORS.clay,
+                }}
+              >
+                ✓
+              </span>
+
+              <span className="opacity-65">
+                {feature}
+              </span>
+            </div>
+          ))}
+        </div>
+
+        <a
+          href="#contact"
+          className="mt-8 flex items-center justify-center gap-2 rounded-full px-5 py-3 text-[10px] font-black uppercase tracking-wide transition hover:opacity-80"
+          style={{
+            backgroundColor: COLORS.black,
+            color: COLORS.ivory,
+          }}
+        >
+          Get a Quote
+
+          <ArrowRight className="h-4 w-4" />
+        </a>
       </div>
+    </div>
+
+    {/* Bottom CTA */}
+    <div
+      className="mt-5 flex flex-col justify-between gap-4 rounded-2xl border p-5 sm:flex-row sm:items-center"
+      style={{
+        backgroundColor: COLORS.ivory,
+        borderColor: "rgba(23,22,21,.08)",
+      }}
+    >
       <div>
-        <h3 className="text-lg font-bold text-white sm:text-xl">Still have questions?</h3>
-        <p className="mt-1 text-sm text-zinc-400">
-          Our team typically responds in under 5 minutes during business hours.
+        <p className="text-sm font-black">
+          Not sure which plan is right for you?
+        </p>
+
+        <p className="mt-1 text-xs opacity-45">
+          We'll take a look at your property and recommend the
+          right option.
         </p>
       </div>
-    </div>
-    <a
-      href="#get-started"
-      className="flex shrink-0 items-center justify-center gap-2 rounded-full bg-[#FF6B35] px-7 py-3 text-sm font-bold text-[#0B0F19] transition-all hover:scale-105 hover:bg-[#F7931E]"
-    >
-      Chat With Support
-      <span>→</span>
-    </a>
-  </div>
-</div>
 
+      <a
+        href="#contact"
+        className="group flex shrink-0 items-center justify-center gap-2 rounded-full px-5 py-3 text-[10px] font-black uppercase tracking-wide transition hover:opacity-80"
+        style={{
+          backgroundColor: COLORS.clay,
+          color: COLORS.black,
+        }}
+      >
+        Get a Free Estimate
+
+        <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+      </a>
     </div>
   </div>
 </section>
 
+      {/* FAQ */}
 
+      <section
+        id="faq"
+        className="py-12 sm:py-16 lg:py-20"
+        style={{ backgroundColor: COLORS.taupe }}
+      >
+        <div className="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8">
+          <div className="text-center">
+            <span className="text-xs font-black uppercase tracking-[.18em]">
+              Questions
+            </span>
 
+            <h2 className="mt-2 text-3xl font-black tracking-tight sm:text-4xl">
+              Before we talk,
+              <span className="block">here's what to know.</span>
+            </h2>
+          </div>
 
+          <div className="mt-8 space-y-2">
+            {faqs.map(([question, answer], index) => {
+              const open = openFaq === index;
 
+              return (
+                <div
+                  key={question}
+                  className="overflow-hidden rounded-2xl"
+                  style={{
+                    backgroundColor: COLORS.ivory,
+                  }}
+                >
+                  <button
+                    type="button"
+                    onClick={() =>
+                      setOpenFaq(open ? -1 : index)
+                    }
+                    className="flex w-full items-center justify-between gap-5 px-5 py-4 text-left text-sm font-black"
+                  >
+                    {question}
 
-      
-      </main>
+                    <ChevronDown
+                      className={`h-4 w-4 shrink-0 transition ${
+                        open ? "rotate-180" : ""
+                      }`}
+                    />
+                  </button>
+
+                  {open && (
+                    <div
+                      className="border-t px-5 pb-5 pt-4 text-xs leading-relaxed opacity-65 sm:text-sm"
+                      style={{
+                        borderColor: "rgba(23,22,21,.10)",
+                      }}
+                    >
+                      {answer}
+                    </div>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      </section>
+
+      {/* FINAL CTA */}
+
+      <section
+  className="relative overflow-hidden py-16 sm:py-20 lg:py-24"
+  style={{
+    backgroundColor: "#11100F",
+    color: COLORS.ivory,
+  }}
+>
+  {/* Subtle premium background glow */}
+  <div
+    className="pointer-events-none absolute -left-32 -top-32 h-80 w-80 rounded-full blur-3xl"
+    style={{
+      backgroundColor: "rgba(180, 126, 82, 0.10)",
+    }}
+  />
+
+  <div
+    className="pointer-events-none absolute -bottom-40 -right-32 h-96 w-96 rounded-full blur-3xl"
+    style={{
+      backgroundColor: "rgba(255, 255, 255, 0.04)",
+    }}
+  />
+
+  <div className="relative mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
+    <div
+      className="rounded-[2rem] border px-6 py-12 text-center sm:px-10 sm:py-16 lg:px-16"
+      style={{
+        background:
+          "linear-gradient(135deg, rgba(255,255,255,.07), rgba(255,255,255,.025))",
+        borderColor: "rgba(249,248,246,.12)",
+        boxShadow: "0 30px 80px rgba(0,0,0,.28)",
+      }}
+    >
+      <span
+        className="text-[10px] font-black uppercase tracking-[.22em]"
+        style={{ color: COLORS.clay }}
+      >
+        Start with clarity
+      </span>
+
+      <h2 className="mx-auto mt-4 max-w-3xl text-3xl font-black leading-[1.05] tracking-tight sm:text-5xl lg:text-6xl">
+        See what your business
+        <span
+          className="block"
+          style={{ color: COLORS.clay }}
+        >
+          could do better.
+        </span>
+      </h2>
+
+      <p className="mx-auto mt-5 max-w-xl text-sm leading-relaxed opacity-55 sm:text-base">
+        Get a clear picture of what's working, what's not, and where
+        your biggest opportunities are.
+      </p>
+
+      <div className="mt-8 flex flex-col justify-center gap-3 sm:flex-row">
+        {/* Free Audit */}
+        <button
+          type="button"
+          onClick={() => scrollToRequest()}
+          className="group flex items-center justify-center gap-2 rounded-full px-7 py-4 text-xs font-black uppercase tracking-wide transition-all duration-300 hover:-translate-y-0.5 hover:shadow-xl"
+          style={{
+            backgroundColor: COLORS.clay,
+            color: COLORS.black,
+            boxShadow: "0 10px 30px rgba(180,126,82,.18)",
+          }}
+        >
+          Get a Free Audit
+
+          <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
+        </button>
+
+        {/* Book Call */}
+        <button
+          type="button"
+          onClick={() => scrollToRequest()}
+          className="group flex items-center justify-center gap-2 rounded-full border px-7 py-4 text-xs font-black uppercase tracking-wide transition-all duration-300 hover:bg-white/10"
+          style={{
+            borderColor: "rgba(249,248,246,.20)",
+            backgroundColor: "rgba(255,255,255,.035)",
+          }}
+        >
+          Book a Call
+
+          <ArrowUpRight className="h-4 w-4 transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
+        </button>
+      </div>
+
+      <div className="mt-8 flex items-center justify-center gap-3 text-[10px] font-semibold uppercase tracking-[.14em] opacity-35">
+        <span className="h-px w-8 bg-current" />
+        No pressure · Just clarity
+        <span className="h-px w-8 bg-current" />
+      </div>
+    </div>
+  </div>
+</section>
+
+      {/* FOOTER */}
 
       <Footer />
-    </div>
+
+      {/* CHAT */}
+
+      <ChatWidget />
+    </main>
   );
 }

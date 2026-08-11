@@ -1,264 +1,824 @@
+/* app/Pricing/page.tsx */
 "use client";
 
 import { useState } from "react";
+import {
+  ArrowRight, Check, ChevronDown, Leaf, Menu, Phone, Sparkles, X, Zap,
+} from "lucide-react";
 
-export default function PricingPage() {
-  const [isAnnual, setIsAnnual] = useState(false);
+const COLORS = {
+  ivory: "#F9F8F6",
+  sand: "#EFE9E3",
+  taupe: "#D9CFC7",
+  clay: "#C9B59C",
+  black: "#171615",
+};
 
-  const monthlyPrice = 297;
-  const annualPrice = 247; // ~2 months free
-  const savings = (monthlyPrice - annualPrice) * 12;
+const plans = [
+  {
+    name: "Starter",
+    eyebrow: "For businesses building the foundation",
+    price: "$997",
+    setup: "one-time setup",
+    monthly: "$197/mo",
+    description: "A conversion-focused website and the essentials you need to start capturing more opportunities.",
+    features: [
+      "High-converting website",
+      "Lead capture forms",
+      "Call & form tracking",
+      "Basic lead notifications",
+      "Review request system",
+      "Mobile optimization",
+    ],
+    cta: "Start With Starter",
+  },
+  {
+    name: "Growth",
+    eyebrow: "For businesses ready to scale",
+    price: "$1,987",
+    setup: "one-time setup",
+    monthly: "$287/mo",
+    description: "Our complete lead capture and follow-up system for turning more inquiries into booked jobs.",
+    features: [
+      "Everything in Starter",
+      "Instant SMS lead response",
+      "Automated email follow-up",
+      "Appointment booking",
+      "Missed-call follow-up",
+      "Customer reactivation",
+      "Advanced conversion tracking",
+      "Priority support",
+    ],
+    cta: "Choose Growth",
+    popular: true,
+  },
+  {
+    name: "Scale",
+    eyebrow: "For established teams",
+    price: "Custom",
+    setup: "tailored implementation",
+    monthly: "Custom monthly",
+    description: "A fully customized growth system built around your lead volume, sales process, and team.",
+    features: [
+      "Everything in Growth",
+      "Custom automation workflows",
+      "Advanced CRM integration",
+      "Multi-location support",
+      "Custom reporting",
+      "Dedicated strategy",
+      "Ongoing optimization",
+    ],
+    cta: "Talk About Scale",
+  },
+];
 
-  const coreFeatures = [
-    "Functional Website (10-20 pages)",
-    "Automated Lead Follow Up",
-    "Missed Call Text Back",
-    "5-Star Magic Review Funnel",
-    "One-Click Marketing Campaigns",
-    "On-Site SEO",
-  ];
+const faqs = [
+  ["Is there a long-term contract?", "No. We prefer to earn your business through results. Your exact agreement and cancellation terms are laid out before you start."],
+  ["What does the setup fee cover?", "Setup covers the initial strategy, design, implementation, integrations, automation configuration, testing, and launch of your system."],
+  ["Can you work with my existing website?", "Yes. Depending on its condition, we can improve the existing experience or recommend a new conversion-focused page when that is the better option."],
+  ["Do I need a CRM?", "Not necessarily. We can work with your current tools and recommend a simple setup when your current process is creating unnecessary friction."],
+  ["How quickly can we launch?", "Most projects can move from strategy to launch quickly once we have the required business information, assets, access, and approvals."],
+];
 
-  const otherServices = [
-    {
-      title: "Google My Business Optimizations",
-      description: "Rank higher in local map packs. Complete GMB setup, weekly posts, photo optimization, and review response automation.",
-      price: "+$97/mo",
-      icon: (
-        <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z" />
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z" />
-        </svg>
-      ),
-    },
-    {
-      title: "Advanced SEO",
-      description: "Dominate organic search. Backlink building, content clusters, technical SEO audits, and competitor gap analysis.",
-      price: "+$197/mo",
-      icon: (
-        <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 013 19.875v-6.75zM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V8.625zM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V4.125z" />
-        </svg>
-      ),
-    },
-    {
-      title: "Google Ads Management",
-      description: "Pay-per-click that actually converts. Campaign build, A/B testing, negative keyword sculpting, and weekly optimization.",
-      price: "+$297/mo",
-      icon: (
-        <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M2.25 18L9 11.25l4.306 4.307a11.95 11.95 0 015.814-5.519l2.74-1.22m0 0l-5.94-2.28m5.94 2.28l-2.28 5.941" />
-        </svg>
-      ),
-    },
+function Navbar({ onStart }: { onStart: () => void }) {
+  const [open, setOpen] = useState(false);
+
+  return (
+    <header
+      className="sticky top-0 z-50 border-b"
+      style={{
+        backgroundColor: "rgba(249,248,246,.94)",
+        borderColor: "rgba(23,22,21,.09)",
+        backdropFilter: "blur(14px)",
+      }}
+    >
+      <div className="mx-auto flex h-[74px] max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
+        <a href="/" className="flex items-center gap-3">
+          <span
+            className="flex h-10 w-10 items-center justify-center rounded-full"
+            style={{ backgroundColor: COLORS.black, color: COLORS.ivory }}
+          >
+            <Leaf className="h-5 w-5" />
+          </span>
+          <span>
+            <span className="block text-base font-black tracking-tight">FIELD & FORM</span>
+            <span
+              className="block text-[9px] font-bold uppercase tracking-[.18em]"
+              style={{ color: COLORS.clay }}
+            >
+              Landscape Co.
+            </span>
+          </span>
+        </a>
+
+        <nav className="hidden items-center gap-7 text-sm font-semibold lg:flex">
+          <a href="/services">Services</a>
+          <a href="/HowItWorks">How It Works</a>
+          <a href="/OurWorks">Our Work</a>
+          <a href="/FreeGrowthAudit">Free Audit</a>
+          <a href="/Pricing" className="font-black">Pricing</a>
+          <a href="/#faq">FAQ</a>
+        </nav>
+
+        <div className="hidden items-center gap-3 sm:flex">
+          <a href="tel:18005550199" className="flex items-center gap-2 text-sm font-bold">
+            <Phone className="h-4 w-4" style={{ color: COLORS.clay }} />
+            (800) 555-0199
+          </a>
+          <button
+            onClick={onStart}
+            className="rounded-full px-5 py-3 text-sm font-black"
+            style={{ backgroundColor: COLORS.black, color: COLORS.ivory }}
+          >
+            Get Started
+          </button>
+        </div>
+
+        <div className="flex items-center gap-2 sm:hidden">
+          <button
+            onClick={onStart}
+            className="rounded-full px-4 py-2.5 text-xs font-black"
+            style={{ backgroundColor: COLORS.black, color: COLORS.ivory }}
+          >
+            Start
+          </button>
+          <button
+            onClick={() => setOpen(!open)}
+            className="flex h-10 w-10 items-center justify-center rounded-full"
+            style={{ backgroundColor: COLORS.clay }}
+            aria-label="Menu"
+          >
+            {open ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+          </button>
+        </div>
+      </div>
+
+      {open && (
+        <div
+          className="border-t px-5 py-5 sm:hidden"
+          style={{ borderColor: "rgba(23,22,21,.09)" }}
+        >
+          {[
+            ["Services", "/services"],
+            ["How It Works", "/HowItWorks"],
+            ["Our Work", "/OurWorks"],
+            ["Free Audit", "/FreeGrowthAudit"],
+            ["Pricing", "/Pricing"],
+            ["FAQ", "/#faq"],
+          ].map(([label, href]) => (
+            <a
+              key={href}
+              href={href}
+              onClick={() => setOpen(false)}
+              className="block py-2.5 text-sm font-bold"
+            >
+              {label}
+            </a>
+          ))}
+          <button
+            onClick={() => {
+              setOpen(false);
+              onStart();
+            }}
+            className="mt-3 w-full rounded-full px-5 py-3 text-sm font-black"
+            style={{ backgroundColor: COLORS.black, color: COLORS.ivory }}
+          >
+            Get Started
+          </button>
+        </div>
+      )}
+    </header>
+  );
+}
+
+function PricingCard({
+  plan,
+  onStart,
+}: {
+  plan: (typeof plans)[number];
+  onStart: () => void;
+}) {
+  return (
+    <article
+      className="relative flex h-full flex-col overflow-hidden rounded-[28px] border p-7 sm:p-8"
+      style={{
+        backgroundColor: plan.popular ? COLORS.black : COLORS.ivory,
+        color: plan.popular ? COLORS.ivory : COLORS.black,
+        borderColor: plan.popular
+          ? COLORS.black
+          : "rgba(23,22,21,.10)",
+        boxShadow: plan.popular
+          ? "0 30px 80px rgba(23,22,21,.17)"
+          : "0 18px 55px rgba(23,22,21,.05)",
+        transform: plan.popular ? "translateY(-10px)" : undefined,
+      }}
+    >
+      {plan.popular && (
+        <div
+          className="absolute right-0 top-0 rounded-bl-2xl px-4 py-2 text-[9px] font-black uppercase tracking-[.15em]"
+          style={{ backgroundColor: COLORS.clay, color: COLORS.black }}
+        >
+          Most Popular
+        </div>
+      )}
+
+      <div
+        className="text-[10px] font-black uppercase tracking-[.17em]"
+        style={{ color: COLORS.clay }}
+      >
+        {plan.name}
+      </div>
+
+      <h3 className="mt-3 text-2xl font-black">{plan.eyebrow}</h3>
+      <p className="mt-3 min-h-[60px] text-sm leading-relaxed opacity-55">
+        {plan.description}
+      </p>
+
+      <div
+        className="my-7 border-y py-6"
+        style={{
+          borderColor: plan.popular
+            ? "rgba(249,248,246,.14)"
+            : "rgba(23,22,21,.10)",
+        }}
+      >
+        <div className="flex items-end gap-2">
+          <span className="text-4xl font-black tracking-[-.04em]">{plan.price}</span>
+          {plan.price !== "Custom" && (
+            <span className="pb-1 text-xs opacity-45">{plan.setup}</span>
+          )}
+        </div>
+        <div
+          className="mt-2 text-sm font-bold"
+          style={{ color: plan.popular ? COLORS.clay : COLORS.black }}
+        >
+          + {plan.monthly}
+        </div>
+      </div>
+
+      <div className="text-[10px] font-black uppercase tracking-[.16em] opacity-40">
+        What&apos;s included
+      </div>
+
+      <div className="mt-5 space-y-3">
+        {plan.features.map((feature) => (
+          <div key={feature} className="flex items-start gap-3 text-sm">
+            <span
+              className="mt-0.5 flex h-4 w-4 shrink-0 items-center justify-center rounded-full"
+              style={{
+                backgroundColor: plan.popular ? COLORS.clay : COLORS.sand,
+                color: COLORS.black,
+              }}
+            >
+              <Check className="h-2.5 w-2.5" />
+            </span>
+            <span className="opacity-75">{feature}</span>
+          </div>
+        ))}
+      </div>
+
+      <button
+        onClick={onStart}
+        className="mt-auto flex w-full items-center justify-center gap-2 rounded-full px-5 py-4 text-sm font-black"
+        style={{
+          backgroundColor: plan.popular ? COLORS.ivory : COLORS.black,
+          color: plan.popular ? COLORS.black : COLORS.ivory,
+          marginTop: "32px",
+        }}
+      >
+        {plan.cta}
+        <ArrowRight className="h-4 w-4" />
+      </button>
+    </article>
+  );
+}
+
+function Comparison() {
+  const rows = [
+    ["Conversion-focused website", true, true, true],
+    ["Lead capture & tracking", true, true, true],
+    ["Review automation", true, true, true],
+    ["SMS lead response", false, true, true],
+    ["Email follow-up", false, true, true],
+    ["Appointment booking", false, true, true],
+    ["Missed-call recovery", false, true, true],
+    ["Customer reactivation", false, true, true],
+    ["Custom automation", false, false, true],
+    ["Dedicated strategy", false, false, true],
   ];
 
   return (
-    <section className="relative w-full overflow-hidden bg-white py-24 dark:bg-zinc-950 sm:py-32">
-      {/* Ambient background effects */}
-      <div className="pointer-events-none absolute -top-40 left-1/2 h-[600px] w-[600px] -translate-x-1/2 rounded-full bg-amber-500/5 blur-3xl dark:bg-amber-500/10" />
-      <div className="pointer-events-none absolute bottom-0 right-0 h-96 w-96 rounded-full bg-orange-500/5 blur-3xl dark:bg-orange-500/10" />
-
-      <div className="relative mx-auto max-w-7xl px-6 lg:px-8">
-        {/* Header */}
-        <div className="mx-auto max-w-3xl text-center">
-          <h2 className="text-base font-semibold uppercase tracking-wider text-amber-600 dark:text-amber-400">
-            Pricing
+    <section
+      className="border-y"
+      style={{
+        backgroundColor: COLORS.sand,
+        borderColor: "rgba(23,22,21,.08)",
+      }}
+    >
+      <div className="mx-auto max-w-6xl px-4 py-20 sm:px-6 lg:px-8">
+        <div className="max-w-2xl">
+          <div
+            className="text-xs font-black uppercase tracking-[.18em]"
+            style={{ color: COLORS.clay }}
+          >
+            Compare
+          </div>
+          <h2 className="mt-3 text-3xl font-black sm:text-4xl">
+            Choose the system that matches your stage.
           </h2>
-          <p className="mt-3 text-4xl font-bold tracking-tight text-zinc-900 dark:text-white sm:text-5xl">
-            Our Pricing
-          </p>
-          <p className="mt-5 text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Everything you need to automate your roofing business. No hidden fees, no setup costs.
-          </p>
         </div>
 
-        {/* Billing Toggle */}
-        <div className="mt-12 flex justify-center">
-          <div className="relative flex items-center rounded-full bg-zinc-100 p-1 dark:bg-zinc-900">
-            <button
-              onClick={() => setIsAnnual(false)}
-              className={`relative z-10 rounded-full px-6 py-2.5 text-sm font-semibold transition-all duration-300 ${
-                !isAnnual
-                  ? "text-zinc-900 shadow-sm dark:text-white"
-                  : "text-zinc-500 hover:text-zinc-700 dark:text-zinc-400 dark:hover:text-zinc-300"
-              }`}
-            >
-              Monthly
-            </button>
-            <button
-              onClick={() => setIsAnnual(true)}
-              className={`relative z-10 rounded-full px-6 py-2.5 text-sm font-semibold transition-all duration-300 ${
-                isAnnual
-                  ? "text-zinc-900 shadow-sm dark:text-white"
-                  : "text-zinc-500 hover:text-zinc-700 dark:text-zinc-400 dark:hover:text-zinc-300"
-              }`}
-            >
-              Annually
-            </button>
-            {/* Sliding background pill */}
-            <div
-              className={`absolute top-1 h-[calc(100%-8px)] w-[calc(50%-4px)] rounded-full bg-white shadow-md transition-all duration-300 dark:bg-zinc-800 ${
-                isAnnual ? "left-[calc(50%+2px)]" : "left-1"
-              }`}
-            />
-          </div>
-        </div>
-
-        {/* Annual savings tag */}
         <div
-          className={`mt-4 text-center text-sm font-medium text-amber-600 transition-all duration-300 dark:text-amber-400 ${
-            isAnnual ? "translate-y-0 opacity-100" : "-translate-y-2 opacity-0"
-          }`}
+          className="mt-10 overflow-x-auto rounded-[25px] border"
+          style={{
+            backgroundColor: COLORS.ivory,
+            borderColor: "rgba(23,22,21,.10)",
+          }}
         >
-          Save ${savings.toLocaleString()}/year with annual billing
-        </div>
-
-        {/* Main Pricing Card */}
-        <div className="mx-auto mt-16 max-w-lg">
-          <div className="relative rounded-3xl border border-amber-500/30 bg-white p-8 shadow-2xl shadow-amber-900/10 dark:border-amber-500/20 dark:bg-zinc-900/80 dark:shadow-amber-900/20 sm:p-10">
-            {/* Glow effect behind card */}
-            <div className="absolute -inset-px -z-10 rounded-3xl bg-gradient-to-b from-amber-500/20 to-transparent opacity-50 blur-sm" />
-
-            {/* Most Popular Badge */}
-            <div className="absolute -top-4 left-1/2 -translate-x-1/2">
-              <span className="inline-flex items-center rounded-full bg-gradient-to-r from-amber-500 to-orange-500 px-4 py-1.5 text-xs font-bold uppercase tracking-wider text-white shadow-lg shadow-amber-500/30">
-                Most Popular
-              </span>
-            </div>
-
-            <div className="mt-2 text-center">
-              <h3 className="text-2xl font-bold tracking-tight text-zinc-900 dark:text-white">
-                Contractor Advanced
-              </h3>
-              <p className="mt-2 text-sm text-zinc-500 dark:text-zinc-400">
-                The complete growth stack for serious roofing contractors.
-              </p>
-            </div>
-
-            <div className="mt-8 flex items-baseline justify-center gap-x-2">
-              <span className="text-5xl font-bold tracking-tight text-zinc-900 dark:text-white">
-                ${isAnnual ? annualPrice : monthlyPrice}
-              </span>
-              <span className="text-sm font-semibold text-zinc-500 dark:text-zinc-400">
-                /mo
-              </span>
-            </div>
-            {isAnnual && (
-              <p className="mt-1 text-center text-xs text-zinc-500 dark:text-zinc-500">
-                Billed annually (${(annualPrice * 12).toLocaleString()}/year)
-              </p>
-            )}
-
-            <ul className="mt-10 space-y-4">
-              {coreFeatures.map((feature) => (
-                <li key={feature} className="flex items-start gap-3">
-                  <div className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-amber-500/10 dark:bg-amber-400/10">
-                    <svg
-                      className="h-3.5 w-3.5 text-amber-600 dark:text-amber-400"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                      strokeWidth={3}
-                    >
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
-                    </svg>
-                  </div>
-                  <span className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
-                    {feature}
-                  </span>
-                </li>
+          <table className="w-full min-w-[680px] border-collapse text-sm">
+            <thead>
+              <tr className="border-b" style={{ borderColor: "rgba(23,22,21,.10)" }}>
+                <th className="px-6 py-5 text-left text-xs font-black uppercase tracking-[.12em]">
+                  Feature
+                </th>
+                {plans.map((plan) => (
+                  <th key={plan.name} className="px-5 py-5 text-center text-xs font-black">
+                    {plan.name}
+                  </th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {rows.map(([feature, starter, growth, scale]) => (
+                <tr
+                  key={feature as string}
+                  className="border-b last:border-0"
+                  style={{ borderColor: "rgba(23,22,21,.07)" }}
+                >
+                  <td className="px-6 py-4 font-semibold opacity-70">
+                    {feature as string}
+                  </td>
+                  {[starter, growth, scale].map((included, i) => (
+                    <td key={i} className="px-5 py-4 text-center">
+                      {included ? (
+                        <span
+                          className="mx-auto flex h-6 w-6 items-center justify-center rounded-full"
+                          style={{
+                            backgroundColor: i === 1 ? COLORS.black : COLORS.sand,
+                            color: i === 1 ? COLORS.ivory : COLORS.black,
+                          }}
+                        >
+                          <Check className="h-3 w-3" />
+                        </span>
+                      ) : (
+                        <span className="opacity-20">—</span>
+                      )}
+                    </td>
+                  ))}
+                </tr>
               ))}
-            </ul>
-
-            <div className="mt-10">
-              <a
-                href="#book-call"
-                className="group relative flex w-full items-center justify-center gap-2 rounded-xl bg-zinc-900 py-4 text-sm font-bold text-white shadow-lg shadow-zinc-900/20 transition-all duration-300 hover:bg-zinc-800 hover:shadow-zinc-900/30 hover:scale-[1.02] active:scale-[0.98] dark:bg-amber-500 dark:text-zinc-950 dark:shadow-amber-500/20 dark:hover:bg-amber-400"
-              >
-                <span className="relative z-10">BOOK A CALL</span>
-                <svg
-                  className="relative z-10 h-4 w-4 transition-transform duration-300 group-hover:translate-x-1"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
-                </svg>
-                <div className="absolute inset-0 -translate-x-full rounded-xl bg-gradient-to-r from-transparent via-white/10 to-transparent transition-transform duration-700 group-hover:translate-x-full" />
-              </a>
-              <p className="mt-3 text-center text-xs text-zinc-500 dark:text-zinc-500">
-                No credit card required. Setup in 48 hours.
-              </p>
-            </div>
-          </div>
-        </div>
-
-        {/* Other Services Section */}
-        <div className="mx-auto mt-24 max-w-3xl text-center">
-          <h3 className="text-2xl font-bold tracking-tight text-zinc-900 dark:text-white">
-            Other Services
-          </h3>
-          <p className="mt-3 text-zinc-600 dark:text-zinc-400">
-            Supercharge your plan with these add-on services.
-          </p>
-        </div>
-
-        <div className="mx-auto mt-12 grid max-w-5xl gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {otherServices.map((service) => (
-            <div
-              key={service.title}
-              className="group relative rounded-2xl border border-zinc-200 bg-white p-6 transition-all duration-300 hover:border-amber-500/30 hover:shadow-lg hover:shadow-amber-900/5 dark:border-zinc-800 dark:bg-zinc-900/50 dark:hover:border-amber-500/20 dark:hover:bg-zinc-900"
-            >
-              <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-zinc-100 text-zinc-700 transition-colors duration-300 group-hover:bg-amber-500/10 group-hover:text-amber-600 dark:bg-zinc-800 dark:text-zinc-400 dark:group-hover:text-amber-400">
-                {service.icon}
-              </div>
-              <h4 className="mt-4 text-base font-semibold text-zinc-900 dark:text-white">
-                {service.title}
-              </h4>
-              <p className="mt-2 text-sm leading-6 text-zinc-600 dark:text-zinc-400">
-                {service.description}
-              </p>
-              <div className="mt-6 flex items-center justify-between">
-                <span className="text-lg font-bold text-zinc-900 dark:text-white">
-                  {service.price}
-                </span>
-                <a
-                  href="#book-call"
-                  className="text-sm font-semibold text-amber-600 transition-colors hover:text-amber-700 dark:text-amber-400 dark:hover:text-amber-300"
-                >
-                  Learn more →
-                </a>
-              </div>
-            </div>
-          ))}
-        </div>
-
-        {/* Trust Footer */}
-        <div className="mt-24 border-t border-zinc-200 pt-12 dark:border-zinc-800">
-          <div className="flex flex-col items-center justify-center gap-6 sm:flex-row">
-            <div className="flex items-center gap-2 text-sm text-zinc-500 dark:text-zinc-500">
-              <svg className="h-5 w-5 text-emerald-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z" />
-              </svg>
-              CSLB Compliant Systems
-            </div>
-            <span className="hidden h-4 w-px bg-zinc-300 dark:bg-zinc-700 sm:block" />
-            <div className="flex items-center gap-2 text-sm text-zinc-500 dark:text-zinc-500">
-              <svg className="h-5 w-5 text-emerald-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12.75L11.25 15 15 9.75M21 12c0 1.268-.63 2.39-1.593 3.068a3.745 3.745 0 01-1.043 3.296 3.745 3.745 0 01-3.296 1.043A3.745 3.745 0 0112 21c-1.268 0-2.39-.63-3.068-1.593a3.746 3.746 0 01-3.296-1.043 3.745 3.745 0 01-1.043-3.296A3.745 3.745 0 013 12c0-1.268.63-2.39 1.593-3.068a3.745 3.745 0 011.043-3.296 3.746 3.746 0 013.296-1.043A3.746 3.746 0 0112 3c1.268 0 2.39.63 3.068 1.593a3.746 3.746 0 013.296 1.043 3.746 3.746 0 011.043 3.296A3.745 3.745 0 0121 12z" />
-              </svg>
-              30-Day Money-Back Guarantee
-            </div>
-            <span className="hidden h-4 w-px bg-zinc-300 dark:bg-zinc-700 sm:block" />
-            <div className="flex items-center gap-2 text-sm text-zinc-500 dark:text-zinc-500">
-              <svg className="h-5 w-5 text-emerald-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z" />
-              </svg>
-              Setup in 48 Hours
-            </div>
-          </div>
+            </tbody>
+          </table>
         </div>
       </div>
     </section>
+  );
+}
+
+function FAQ() {
+  const [active, setActive] = useState<number | null>(0);
+
+  return (
+    <section id="faq" className="scroll-mt-24 py-20 sm:py-28">
+      <div className="mx-auto grid max-w-5xl gap-12 px-4 sm:px-6 lg:grid-cols-[.75fr_1.25fr] lg:px-8">
+        <div>
+          <div
+            className="text-xs font-black uppercase tracking-[.18em]"
+            style={{ color: COLORS.clay }}
+          >
+            Questions
+          </div>
+          <h2 className="mt-3 text-3xl font-black sm:text-4xl">
+            Pricing without the mystery.
+          </h2>
+          <p className="mt-5 text-sm leading-relaxed opacity-55">
+            We&apos;ll tell you exactly what is included before anything starts.
+          </p>
+        </div>
+
+        <div className="space-y-2">
+          {faqs.map(([question, answer], index) => (
+            <div
+              key={question}
+              className="overflow-hidden rounded-2xl border"
+              style={{
+                backgroundColor: COLORS.ivory,
+                borderColor: "rgba(23,22,21,.10)",
+              }}
+            >
+              <button
+                onClick={() => setActive(active === index ? null : index)}
+                className="flex w-full items-center justify-between gap-5 px-5 py-5 text-left text-sm font-black"
+              >
+                {question}
+                <ChevronDown
+                  className="h-4 w-4 shrink-0 transition-transform"
+                  style={{
+                    transform: active === index ? "rotate(180deg)" : undefined,
+                  }}
+                />
+              </button>
+              {active === index && (
+                <p className="px-5 pb-5 text-sm leading-relaxed opacity-55">
+                  {answer}
+                </p>
+              )}
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function StartModal({
+  open,
+  close,
+}: {
+  open: boolean;
+  close: () => void;
+}) {
+  if (!open) return null;
+
+  return (
+    <div
+      className="fixed inset-0 z-[80] flex items-center justify-center p-4"
+      onMouseDown={(e) => e.currentTarget === e.target && close()}
+      style={{
+        backgroundColor: "rgba(23,22,21,.62)",
+        backdropFilter: "blur(8px)",
+      }}
+    >
+      <div
+        className="relative w-full max-w-lg rounded-[30px] border p-7 sm:p-10"
+        style={{
+          backgroundColor: COLORS.ivory,
+          borderColor: "rgba(23,22,21,.12)",
+        }}
+      >
+        <button
+          onClick={close}
+          className="absolute right-4 top-4 flex h-10 w-10 items-center justify-center rounded-full"
+          style={{ backgroundColor: COLORS.sand }}
+          aria-label="Close"
+        >
+          <X className="h-5 w-5" />
+        </button>
+
+        <div
+          className="text-[10px] font-black uppercase tracking-[.18em]"
+          style={{ color: COLORS.clay }}
+        >
+          Let&apos;s Talk
+        </div>
+        <h2 className="mt-3 text-3xl font-black">
+          Tell us what you&apos;re trying to grow.
+        </h2>
+        <p className="mt-3 text-sm leading-relaxed opacity-55">
+          We&apos;ll help you figure out which setup makes sense for your business.
+        </p>
+
+        <form
+          className="mt-7 space-y-4"
+          onSubmit={(e) => {
+            e.preventDefault();
+            close();
+          }}
+        >
+          <input
+            required
+            placeholder="Your name"
+            className="w-full rounded-xl border px-4 py-3 text-sm outline-none"
+            style={{
+              backgroundColor: COLORS.ivory,
+              borderColor: "rgba(23,22,21,.14)",
+            }}
+          />
+          <input
+            required
+            type="email"
+            placeholder="Email address"
+            className="w-full rounded-xl border px-4 py-3 text-sm outline-none"
+            style={{
+              backgroundColor: COLORS.ivory,
+              borderColor: "rgba(23,22,21,.14)",
+            }}
+          />
+          <input
+            required
+            placeholder="Business website"
+            className="w-full rounded-xl border px-4 py-3 text-sm outline-none"
+            style={{
+              backgroundColor: COLORS.ivory,
+              borderColor: "rgba(23,22,21,.14)",
+            }}
+          />
+          <select
+            defaultValue=""
+            required
+            className="w-full rounded-xl border px-4 py-3 text-sm outline-none"
+            style={{
+              backgroundColor: COLORS.ivory,
+              borderColor: "rgba(23,22,21,.14)",
+            }}
+          >
+            <option value="" disabled>
+              What are you looking for?
+            </option>
+            <option>Website + lead capture</option>
+            <option>Lead follow-up automation</option>
+            <option>Complete growth system</option>
+            <option>Custom / not sure</option>
+          </select>
+
+          <button
+            type="submit"
+            className="flex w-full items-center justify-center gap-2 rounded-full px-5 py-4 text-sm font-black"
+            style={{ backgroundColor: COLORS.black, color: COLORS.ivory }}
+          >
+            Request a Conversation <ArrowRight className="h-4 w-4" />
+          </button>
+        </form>
+      </div>
+    </div>
+  );
+}
+
+function Footer({ onStart }: { onStart: () => void }) {
+  return (
+    <footer
+      className="border-t"
+      style={{ borderColor: "rgba(23,22,21,.10)" }}
+    >
+      <div className="mx-auto max-w-7xl px-4 py-14 sm:px-6 lg:px-8">
+        <div className="grid gap-10 lg:grid-cols-[1.1fr_.7fr_.7fr_1.3fr]">
+          <div>
+            <a href="/" className="flex items-center gap-3">
+              <span
+                className="flex h-11 w-11 items-center justify-center rounded-full"
+                style={{ backgroundColor: COLORS.black, color: COLORS.ivory }}
+              >
+                <Leaf className="h-5 w-5" />
+              </span>
+              <span>
+                <span className="block text-base font-black">FIELD & FORM</span>
+                <span
+                  className="block text-[9px] font-bold uppercase tracking-[.18em]"
+                  style={{ color: COLORS.clay }}
+                >
+                  Landscape Co.
+                </span>
+              </span>
+            </a>
+            <p className="mt-5 max-w-sm text-sm leading-relaxed opacity-60">
+              Growth systems for home-service businesses that want to capture more
+              leads and book more work.
+            </p>
+          </div>
+
+          <div>
+            <h3 className="text-xs font-black uppercase tracking-[.18em]">Explore</h3>
+            <div className="mt-5 space-y-3 text-sm opacity-60">
+              <a className="block" href="/services">Services</a>
+              <a className="block" href="/HowItWorks">How It Works</a>
+              <a className="block" href="/OurWorks">Our Work</a>
+              <a className="block" href="/FreeGrowthAudit">Free Audit</a>
+            </div>
+          </div>
+
+          <div>
+            <h3 className="text-xs font-black uppercase tracking-[.18em]">Pricing</h3>
+            <div className="mt-5 space-y-3 text-sm opacity-60">
+              <a className="block" href="#plans">Plans</a>
+              <a className="block" href="#compare">Compare</a>
+              <a className="block" href="#faq">FAQ</a>
+            </div>
+          </div>
+
+          <div
+            className="rounded-2xl border p-5"
+            style={{
+              backgroundColor: COLORS.sand,
+              borderColor: "rgba(23,22,21,.10)",
+            }}
+          >
+            <div
+              className="text-[10px] font-black uppercase tracking-[.18em]"
+              style={{ color: COLORS.clay }}
+            >
+              Not sure which plan?
+            </div>
+            <p className="mt-3 text-sm font-bold leading-relaxed">
+              Start with a free growth audit and we&apos;ll show you what deserves
+              attention first.
+            </p>
+            <button
+              onClick={onStart}
+              className="mt-5 inline-flex items-center gap-2 text-xs font-black uppercase tracking-[.12em]"
+            >
+              Let&apos;s Talk <ArrowRight className="h-4 w-4" />
+            </button>
+          </div>
+        </div>
+
+        <div
+          className="mt-12 border-t pt-6 text-xs opacity-45"
+          style={{ borderColor: "rgba(23,22,21,.10)" }}
+        >
+          © {new Date().getFullYear()} Field & Form Landscape Co. All rights reserved.
+        </div>
+      </div>
+    </footer>
+  );
+}
+
+export default function PricingPage() {
+  const [modalOpen, setModalOpen] = useState(false);
+
+  return (
+    <main
+      className="min-h-screen"
+      style={{
+        backgroundColor: COLORS.ivory,
+        color: COLORS.black,
+        fontFamily: "Inter,ui-sans-serif,system-ui,sans-serif",
+      }}
+    >
+      <Navbar onStart={() => setModalOpen(true)} />
+
+      {/* HERO */}
+      <section className="relative overflow-hidden">
+        <div className="mx-auto max-w-6xl px-4 pb-14 pt-16 text-center sm:px-6 lg:px-8 lg:pb-20 lg:pt-24">
+          <div
+            className="mx-auto inline-flex items-center gap-2 rounded-full border px-4 py-2 text-[10px] font-black uppercase tracking-[.16em]"
+            style={{
+              backgroundColor: COLORS.sand,
+              borderColor: "rgba(23,22,21,.10)",
+            }}
+          >
+            <Sparkles className="h-3.5 w-3.5" style={{ color: COLORS.clay }} />
+            Simple, transparent pricing
+          </div>
+
+          <h1 className="mx-auto mt-6 max-w-4xl text-5xl font-black leading-[.94] tracking-[-.05em] sm:text-6xl lg:text-7xl">
+            The growth system you need.
+            <span className="block" style={{ color: COLORS.clay }}>
+              Nothing you don&apos;t.
+            </span>
+          </h1>
+
+          <p className="mx-auto mt-6 max-w-2xl text-sm leading-relaxed opacity-60 sm:text-base">
+            Choose the level of support that fits your business today. Start
+            simple, add automation when you&apos;re ready, and scale when the
+            opportunity is there.
+          </p>
+
+          <div className="mt-7 flex flex-wrap items-center justify-center gap-5 text-xs font-semibold opacity-50">
+            <span className="flex items-center gap-2">
+              <Check className="h-3.5 w-3.5" /> No hidden fees
+            </span>
+            <span className="flex items-center gap-2">
+              <Check className="h-3.5 w-3.5" /> Built for home services
+            </span>
+            <span className="flex items-center gap-2">
+              <Check className="h-3.5 w-3.5" /> Cancel anytime*
+            </span>
+          </div>
+        </div>
+      </section>
+
+      {/* PLANS */}
+      <section id="plans" className="scroll-mt-24 pb-20 sm:pb-28">
+        <div className="mx-auto grid max-w-6xl items-stretch gap-5 px-4 sm:px-6 lg:grid-cols-3 lg:px-8">
+          {plans.map((plan) => (
+            <PricingCard
+              key={plan.name}
+              plan={plan}
+              onStart={() => setModalOpen(true)}
+            />
+          ))}
+        </div>
+        <p className="mx-auto mt-5 max-w-6xl px-4 text-[10px] leading-relaxed opacity-35 sm:px-6 lg:px-8">
+          *Contract terms can vary by engagement. Final scope, pricing, implementation,
+          and cancellation terms are confirmed before work begins.
+        </p>
+      </section>
+
+      {/* VALUE STRIP */}
+      <section
+        className="border-y"
+        style={{
+          backgroundColor: COLORS.black,
+          color: COLORS.ivory,
+          borderColor: COLORS.black,
+        }}
+      >
+        <div className="mx-auto grid max-w-6xl gap-0 sm:grid-cols-3">
+          {[
+            ["01", "Capture", "Make it easier for the right people to become leads."],
+            ["02", "Respond", "Follow up while the opportunity is still fresh."],
+            ["03", "Book", "Turn more conversations into scheduled jobs."],
+          ].map(([number, title, text]) => (
+            <div
+              key={number}
+              className="border-b p-7 last:border-b-0 sm:border-b-0 sm:border-r sm:last:border-r-0"
+              style={{ borderColor: "rgba(249,248,246,.12)" }}
+            >
+              <div className="text-xs font-black" style={{ color: COLORS.clay }}>
+                {number}
+              </div>
+              <h3 className="mt-4 text-xl font-black">{title}</h3>
+              <p className="mt-2 text-xs leading-relaxed opacity-50">{text}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* COMPARISON */}
+      <div id="compare" className="scroll-mt-24">
+        <Comparison />
+      </div>
+
+      {/* MINI CTA */}
+      <section className="py-20 sm:py-24">
+        <div
+          className="mx-auto flex max-w-5xl flex-col items-center justify-between gap-7 rounded-[28px] border px-7 py-9 sm:flex-row sm:px-10"
+          style={{
+            backgroundColor: COLORS.sand,
+            borderColor: "rgba(23,22,21,.09)",
+          }}
+        >
+          <div>
+            <div
+              className="text-[10px] font-black uppercase tracking-[.18em]"
+              style={{ color: COLORS.clay }}
+            >
+              Still deciding?
+            </div>
+            <h2 className="mt-2 text-2xl font-black">
+              Get a free growth audit first.
+            </h2>
+            <p className="mt-2 max-w-xl text-sm opacity-55">
+              We&apos;ll identify the biggest opportunities before you decide
+              what to invest in.
+            </p>
+          </div>
+          <a
+            href="/FreeGrowthAudit"
+            className="inline-flex shrink-0 items-center gap-2 rounded-full px-6 py-3 text-xs font-black uppercase tracking-[.1em]"
+            style={{ backgroundColor: COLORS.black, color: COLORS.ivory }}
+          >
+            Free Growth Audit <ArrowRight className="h-4 w-4" />
+          </a>
+        </div>
+      </section>
+
+      <FAQ />
+
+      {/* FINAL CTA */}
+      <section
+        className="border-t py-24 sm:py-32"
+        style={{ borderColor: "rgba(23,22,21,.10)" }}
+      >
+        <div className="mx-auto max-w-3xl px-4 text-center sm:px-6">
+          <div
+            className="mx-auto flex h-12 w-12 items-center justify-center rounded-full"
+            style={{ backgroundColor: COLORS.sand }}
+          >
+            <Zap className="h-5 w-5" />
+          </div>
+          <h2 className="mt-6 text-4xl font-black sm:text-5xl">
+            Stop paying for tools.
+            <span className="block" style={{ color: COLORS.clay }}>
+              Start building a system.
+            </span>
+          </h2>
+          <p className="mx-auto mt-5 max-w-xl text-sm leading-relaxed opacity-60 sm:text-base">
+            Tell us where your business is today and where you want it to go.
+            We&apos;ll help you choose the right setup.
+          </p>
+          <button
+            onClick={() => setModalOpen(true)}
+            className="mt-8 inline-flex items-center gap-2 rounded-full px-7 py-4 text-sm font-black uppercase tracking-wide"
+            style={{ backgroundColor: COLORS.black, color: COLORS.ivory }}
+          >
+            Get Started <ArrowRight className="h-4 w-4" />
+          </button>
+        </div>
+      </section>
+
+      <Footer onStart={() => setModalOpen(true)} />
+      <StartModal open={modalOpen} close={() => setModalOpen(false)} />
+    </main>
   );
 }
